@@ -187,3 +187,9 @@ Pre-generated example outputs are available under:
 - `outputs/schemas/adult_schema.json`
 - `outputs/schemas/breast_cancer_schema.json`
 - `outputs/schemas/ncctg_lung_schema.json`
+
+## CLI reference
+
+For a full flag-by-flag reference of all command options, see:
+
+- `docs/CLI_FLAGS.md`

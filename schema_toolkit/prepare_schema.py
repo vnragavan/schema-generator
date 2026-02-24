@@ -266,6 +266,11 @@ def main() -> None:
     ap.add_argument("--datetime-min-parse-frac", type=float, default=0.95)
     ap.add_argument("--datetime-output-format", type=str, default="preserve")
     ap.add_argument("--guid-min-match-frac", type=float, default=0.95)
+    ap.add_argument(
+        "--redact-source-path",
+        action="store_true",
+        help="Write a placeholder instead of local source path in provenance.source_csv",
+    )
     args = ap.parse_args()
 
     delimiter = _infer_csv_delimiter(args.data) if str(args.delimiter).strip().lower() == "auto" else str(args.delimiter)
@@ -383,7 +388,9 @@ def main() -> None:
         "datetime_spec": datetime_spec,
         "provenance": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "source_csv": str(args.data),
+            "source_csv": (
+                "example_data_path_to_csv_file" if bool(args.redact_source_path) else str(args.data)
+            ),
             "source_delimiter": delimiter,
             "pad_frac": float(args.pad_frac),
             "inferred_categories": bool(args.infer_categories),
