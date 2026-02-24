@@ -38,7 +38,7 @@ pip install -r requirements.txt
 ```bash
 python schema_toolkit/prepare_schema.py \
   --data data/my_dataset.csv \
-  --out out/my_schema.json \
+  --out outputs/schemas/my_schema.json \
   --dataset-name my_dataset \
   --target-col target \
   --infer-categories \
@@ -46,7 +46,7 @@ python schema_toolkit/prepare_schema.py \
   --infer-datetimes
 ```
 
-**Target Inference Fallbacks:** If `--target-col` is not supplied inside the execution loop directly, the application runs a heuristic verifying if any column names structurally exactly identically matches the keywords: `target`, `income`, `label`, `class`, or `outcome` sequentially. If none execute a match, `target_col` resolves dynamically to `None`. To prevent unanticipated variables capturing the outcome (such as a string `income` band feature), we strongly recommend you always explicitly route the target param via `--target-col`.
+**Target Inference Fallbacks:** If `--target-col` is not supplied, the application checks if any column name exactly matches these keywords: `target`, `income`, `label`, `class`, or `outcome`. If no match is found, `target_col` defaults to `None`. To prevent unexpected variables from being captured as the outcome, we strongly recommend always setting `--target-col` explicitly.
 
 ## Extra definition files (recommended)
 
@@ -131,7 +131,7 @@ Detailed reference: `docs/CONSTRAINTS.md`
 ```bash
 python schema_toolkit/prepare_schema.py \
   --data data/my_dataset.csv \
-  --out out/my_schema.json \
+  --out outputs/schemas/my_schema.json \
   --dataset-name my_dataset \
   --target-col event \
   --column-types inputs/schemas/column_types.sample.json \
@@ -155,17 +155,17 @@ Example:
 
 ```bash
 python schema_toolkit/render_datetime.py \
-  --data out/synthetic.csv \
-  --schema out/my_schema.json \
+  --data outputs/schemas/synthetic.csv \
+  --schema outputs/schemas/my_schema.json \
   --keep-original \
-  --out out/synthetic_rendered.csv
+  --out outputs/schemas/synthetic_rendered.csv
 ```
 
 **`render_datetime.py` specifics:**
-- Enacting the `--keep-original` parameter explicitly retains the starting epoch-ns variable natively, allocating synthesized formatting values adjacent under `<col>__rendered` columns safely.
-- If simulated epoch-ns integers violate boundaries previously identified functionally (stretching externally outwards), string outputs stringify normally regardless natively rendering without runtime boundary blockages.
-- Standard generated datetimes are explicitly coerced safely into globally compliant `UTC` epochs, neutralizing original regional strings automatically.
-- A hard runtime `SystemExitException` strictly crashes if schemas lack `datetime_spec` object dictionaries structurally correctly resolving representations.
+- Using `--keep-original` retains the original epoch-ns column and adds the formatted string values in a new `<col>__rendered` column.
+- If synthesized datetimes are out-of-bounds, they are still converted to valid strings without errors.
+- Generated datetimes are safely coerced to standard UTC timestamps, ignoring any original timezone offsets.
+- The script requires a valid `datetime_spec` parameter in the schema object, otherwise it exits.
 
 ## Output contract (top-level keys)
 
@@ -189,7 +189,7 @@ python schema_toolkit/render_datetime.py \
 
 - **Warning:** Using `--infer-binary-domain` forces integer columns with exactly two values into `ordinal` categorical structures.
 - If source data is private, inferred metadata should not automatically be treated as public.
-- Review schema output carefully before using it globally across privacy workflows structurally. Validations and missing components should be mapped formally using reference `docs/MISSING_DATA.md` and `docs/PUBLIC_METADATA.md`.
+- Review schema output carefully before using it across privacy workflows. Validations and missing components should be mapped using `docs/MISSING_DATA.md` and `docs/PUBLIC_METADATA.md`.
 
 ## Dataset examples
 
