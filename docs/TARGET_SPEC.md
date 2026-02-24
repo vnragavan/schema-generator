@@ -58,6 +58,8 @@ For survival use case:
 
 The schema generator will also add survival-oriented cross-column constraints in `constraints`.
 
+**Important Positional Output Warning:** When `targets` is initialized as a list and `kind` is designated as `survival_pair`, the script expects positional arguments inside the internal processing code. It will reliably extract `targets[0]` as the *event* indicator column, and `targets[1]` as the *time* column. If you configure `"targets": ["time_to_event", "event"]` backward, downstream consumers will incorrectly validate `min_exclusive > 0` thresholds sequentially onto your binary outcome column, shattering constraints.
+
 ## If you do not provide this file
 
 Toolkit can still infer target metadata from CLI:

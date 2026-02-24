@@ -1,0 +1,66 @@
+{
+  "column_constraints": {
+    "icd_10_code": {
+      "constraint_class": "RegexMatch",
+      "pattern": "^[A-Z][0-9]{2}(\\.[0-9]{1,4})?$"
+    }
+  },
+  "cross_column_constraints": [
+    {
+      "constraint_class": "Inequality",
+      "name": "hospital_stay_chronology",
+      "low_column": "admission_datetime",
+      "high_column": "discharge_datetime",
+      "strict_boundaries": false
+    },
+    {
+      "constraint_class": "FixedCombinations",
+      "name": "pregnancy_sex_logic",
+      "columns": [
+        "pregnancy_status",
+        "biological_sex"
+      ],
+      "valid_combinations": [
+        [0, "M"],
+        [0, "F"],
+        [1, "F"]
+      ]
+    },
+    {
+      "constraint_class": "CompositionalSum",
+      "name": "total_cost_accounting",
+      "total_column": "total_hospital_cost",
+      "component_columns": [
+        "procedure_cost",
+        "medication_cost",
+        "room_board_cost"
+      ],
+      "tolerance": 0.01
+    },
+    {
+      "constraint_class": "PiecewiseBounds",
+      "name": "age_adjusted_heart_rate",
+      "target_column": "heart_rate_bpm",
+      "condition_column": "age_years",
+      "conditions": [
+        {
+          "criteria": "< 1",
+          "bounds": {"min": 100, "max": 180}
+        },
+        {
+          "criteria": ">= 18",
+          "bounds": {"min": 40, "max": 110}
+        }
+      ]
+    }
+  ],
+  "row_group_constraints": [
+    {
+      "constraint_class": "MonotonicOrdering",
+      "name": "sequential_patient_visits",
+      "entity_column": "patient_id",
+      "sort_column": "visit_timestamp",
+      "trend": "strictly_increasing"
+    }
+  ]
+}

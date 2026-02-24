@@ -33,20 +33,20 @@ This document is the complete CLI reference for:
 
 - `--target-cols <csv-list>`
   - **Default:** none
-  - Comma-separated list for multi-target setup.
+  - Comma-separated list of target columns for multi-target schemas (alternative to `--target-spec-file`).
   - Example: `event,time_to_event`
 
 - `--target-kind <string>`
   - **Default:** inferred (`single` or `multi_target`)
-  - Target semantic kind (`single`, `multi_target`, `survival_pair`, etc.).
+  - Manually specify the target semantic kind (`single`, `multi_target`, `survival_pair`, etc.).
 
 - `--survival-event-col <string>`
   - **Default:** none
-  - Event indicator column for survival mode.
+  - Shorthand to set the event indicator column of a survival pair directly on the CLI.
 
 - `--survival-time-col <string>`
   - **Default:** none
-  - Time-to-event column for survival mode.
+  - Shorthand to set the time-to-event column of a survival pair directly on the CLI.
 
 ### User-provided definition files
 
@@ -69,9 +69,7 @@ This document is the complete CLI reference for:
 
 - `--delimiter <string>`
   - **Default:** `auto`
-  - Input field separator.
-  - `auto` infers delimiter (supports common delimiters like comma, semicolon, tab, pipe).
-  - You can set explicit delimiter such as `,`, `;`, `\t`, `|`.
+  - Input field separator. Uses heuristics when set to `auto`. 
 
 - `--pad-frac <float>`
   - **Default:** `0.0`
@@ -79,12 +77,11 @@ This document is the complete CLI reference for:
 
 - `--pad-frac-integer <float>`
   - **Default:** unset (falls back to `--pad-frac`)
-  - Padding fraction for columns typed as `integer`.
-  - Integer bounds are rounded outward to preserve integer semantics.
+  - Per-type padding for integer columns only.
 
 - `--pad-frac-continuous <float>`
   - **Default:** unset (falls back to `--pad-frac`)
-  - Padding fraction for columns typed as `continuous`.
+  - Per-type padding for continuous columns only.
 
 - `--infer-categories`
   - **Default:** off
@@ -92,12 +89,12 @@ This document is the complete CLI reference for:
 
 - `--max-categories <int>`
   - **Default:** `200`
-  - Maximum unique categories allowed for inferred categorical domain export.
-  - If unique count exceeds this threshold, domain is not emitted.
+  - Maximum number of unique values to enumerate into `public_categories`. If unique count exceeds this threshold, domain is not emitted.
 
 - `--infer-binary-domain`
   - **Default:** off
-  - For integer 2-valued fields (e.g., `0/1`, `1/2`), infer ordinal domain in `public_categories`.
+  - For integer 2-valued fields (e.g., `0/1`, `1/2`), infer ordinal domain in `public_categories` and **promotes the column type from "integer" to "ordinal"**.
+  - **Warning**: Downstream consumers expecting structural integers for 0/1 booleans will receive an ordinal type instead. 
 
 - `--infer-datetimes`
   - **Default:** off
@@ -105,21 +102,23 @@ This document is the complete CLI reference for:
 
 - `--datetime-min-parse-frac <float>`
   - **Default:** `0.95`
-  - Minimum parse success fraction required to treat a string column as datetime-like.
+  - Minimum fraction of non-null parses required before a column is treated structurally as a datetime instead of a string categorical. 
 
 - `--datetime-output-format <string>`
   - **Default:** `preserve`
-  - Datetime rendering format metadata for `datetime_spec`.
-  - `preserve`: best-effort format inferred from source values.
-  - Or pass explicit `strftime` format, e.g. `%Y-%m-%dT%H:%M:%S`.
+  - Override the output format string applied to all extracted datetime columns. `preserve` defaults to inferring the best-effort pattern directly from the series values per-column. 
 
 - `--guid-min-match-frac <float>`
   - **Default:** `0.95`
-  - Fraction threshold for classifying a string column as GUID/UUID-like identifier.
+  - Minimum fraction of values matching the UUID regex before a column is formally classified as a GUID identity.
 
 - `--redact-source-path`
-  - **Default:** off
-  - If set, `provenance.source_csv` is written as `example_data_path_to_csv_file` instead of an absolute/local file path.
+  - **Default:** `False`
+  - Writes a placeholder string instead of the real executing local directory path within the JSON payload `provenance.source_csv`. Prominently recommended for sharing federated objects. 
+
+- `--no-publish-label-domain`
+  - **Default:** `False`
+  - Manual flag to override and suppress target variables from leaking explicit enumeration domains into `label_domain` and `public_categories`. Useful for reducing sensitive or low-volume prediction label leaks.
 
 ---
 
@@ -145,9 +144,8 @@ This document is the complete CLI reference for:
 ### Optional arguments
 
 - `--keep-original`
-  - **Default:** off
-  - If set, original epoch-ns datetime columns are retained and rendered values are written to `<column>__rendered`.
-  - If not set, source datetime columns are replaced with rendered strings.
+  - **Default:** `False`
+  - Keeps the original epoch-ns column structurally and simultaneously writes the newly rendered string datetime payload uniquely to a new `<col>__rendered` column rather than replacing the source column in-place. 
 
 ---
 
@@ -155,39 +153,6 @@ This document is the complete CLI reference for:
 
 - If `--target-spec-file` is provided, it takes precedence over CLI target composition flags (`--target-cols`, survival flags).
 - `--column-types` overrides automatic column typing.
-- `--constraints-file` is merged on top of generated constraints:
-  - `column_constraints`: updated by key
-  - `cross_column_constraints`: appended
-  - `row_group_constraints`: appended
-- Padding precedence is:
-  - `--pad-frac-integer` for `integer` columns when provided
-  - `--pad-frac-continuous` for `continuous` columns when provided
-  - otherwise global `--pad-frac`
+- Padding precedence is: `--pad-frac-integer` / `--pad-frac-continuous` then `--pad-frac`.
 - `categorical`/`ordinal` columns do not use bounds padding.
 - Datetime parsing only runs when `--infer-datetimes` is enabled.
-
----
-
-## 4) Example (full option usage)
-
-```bash
-python schema_toolkit/prepare_schema.py \
-  --data data/ncctg_lung.csv \
-  --out out/ncctg_lung_schema.json \
-  --dataset-name ncctg_lung \
-  --target-col event \
-  --column-types examples/column_types.sample.json \
-  --target-spec-file examples/target_spec.sample.json \
-  --constraints-file examples/constraints.sample.json \
-  --delimiter auto \
-  --pad-frac 0.0 \
-  --pad-frac-integer 0.0 \
-  --pad-frac-continuous 0.02 \
-  --infer-categories \
-  --max-categories 200 \
-  --infer-binary-domain \
-  --infer-datetimes \
-  --datetime-min-parse-frac 0.95 \
-  --datetime-output-format preserve \
-  --guid-min-match-frac 0.95
-```

@@ -259,16 +259,21 @@ def _build_constraints(
 
 
 def _merge_constraints(base: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
-    out = dict(base)
+    import copy
+    out = copy.deepcopy(base)
     out.setdefault("column_constraints", {})
     out.setdefault("cross_column_constraints", [])
     out.setdefault("row_group_constraints", [])
     if isinstance(user.get("column_constraints"), dict):
-        out["column_constraints"].update(user["column_constraints"])
+        for col, rules in user["column_constraints"].items():
+            if isinstance(rules, dict):
+                if col not in out["column_constraints"]:
+                    out["column_constraints"][col] = {}
+                out["column_constraints"][col].update(rules)
     if isinstance(user.get("cross_column_constraints"), list):
-        out["cross_column_constraints"].extend(user["cross_column_constraints"])
+        out["cross_column_constraints"].extend(copy.deepcopy(user["cross_column_constraints"]))
     if isinstance(user.get("row_group_constraints"), list):
-        out["row_group_constraints"].extend(user["row_group_constraints"])
+        out["row_group_constraints"].extend(copy.deepcopy(user["row_group_constraints"]))
     return out
 
 
@@ -307,6 +312,11 @@ def main() -> None:
     ap.add_argument("--datetime-output-format", type=str, default="preserve")
     ap.add_argument("--guid-min-match-frac", type=float, default=0.95)
     ap.add_argument(
+        "--no-publish-label-domain",
+        action="store_true",
+        help="Do not enumerate target column values into label_domain or public_categories",
+    )
+    ap.add_argument(
         "--redact-source-path",
         action="store_true",
         help="Write a placeholder instead of local source path in provenance.source_csv",
@@ -320,6 +330,7 @@ def main() -> None:
 
     public_bounds: dict[str, list[float]] = {}
     public_categories: dict[str, list[str]] = {}
+    missing_value_rates: dict[str, float] = {}
     column_types: dict[str, str] = {}
     datetime_spec: dict[str, dict[str, Any]] = {}
     guid_like_columns: list[str] = []
@@ -350,17 +361,12 @@ def main() -> None:
         raise SystemExit(f"--column-types[{col}] must be a string or object")
 
     for c in cols:
-        if c == target_col:
-            continue
         s0 = df[c]
+        missing_value_rates[c] = float(s0.isna().mean())
+
         if _is_guid_like_series(s0, min_match_frac=float(args.guid_min_match_frac)):
             column_types[c] = "categorical"
             guid_like_columns.append(c)
-            if args.infer_categories:
-                u = pd.Series(s0, copy=False).astype("string").dropna().unique().tolist()
-                u = [str(x) for x in u]
-                if 0 < len(u) <= int(args.max_categories):
-                    public_categories[c] = sorted(u)
             continue
 
         s, dt_converted, dt_fmt_hint = _maybe_parse_datetime_like(
@@ -385,13 +391,18 @@ def main() -> None:
                     this_pad,
                     integer_like=(t == "integer"),
                 )
+            if dt_converted:
+                out_fmt = dt_fmt_hint if str(args.datetime_output_format).strip().lower() == "preserve" else str(args.datetime_output_format)
+                datetime_spec[c] = {
+                    "storage": "epoch_ns",
+                    "output_format": out_fmt or "%Y-%m-%dT%H:%M:%S",
+                    "timezone": "UTC",
+                }
             continue
 
         if pd.api.types.is_bool_dtype(s0):
             column_types[c] = "ordinal"
-            public_categories[c] = ["0", "1"] if bool(args.infer_binary_domain) else public_categories.get(c, [])
-            if c not in public_categories:
-                public_bounds[c] = [0.0, 1.0]
+            public_categories[c] = ["0", "1"]
         elif _is_number_like_series(s):
             if dt_converted:
                 column_types[c] = "integer"
@@ -401,6 +412,7 @@ def main() -> None:
                     "output_format": out_fmt or "%Y-%m-%dT%H:%M:%S",
                     "timezone": "UTC",
                 }
+                public_bounds[c] = _bounds_for_number_like(s, pad_frac_integer, integer_like=True)
             else:
                 if pd.api.types.is_integer_dtype(s0):
                     column_types[c] = "integer"
@@ -409,18 +421,18 @@ def main() -> None:
                     xn = x[np.isfinite(x)]
                     column_types[c] = "integer" if xn.size > 0 and np.all(np.isclose(xn, np.round(xn), atol=1e-8)) else "continuous"
 
-            bin_dom = _binary_integer_domain_values(s) if bool(args.infer_binary_domain) else None
-            if bin_dom is not None:
-                column_types[c] = "ordinal"
-                public_categories[c] = bin_dom
-            else:
-                inferred_t = column_types[c]
-                this_pad = pad_frac_integer if inferred_t == "integer" else pad_frac_continuous
-                public_bounds[c] = _bounds_for_number_like(
-                    s,
-                    this_pad,
-                    integer_like=(inferred_t == "integer"),
-                )
+                bin_dom = _binary_integer_domain_values(s) if bool(args.infer_binary_domain) else None
+                if bin_dom is not None:
+                    column_types[c] = "ordinal"
+                    public_categories[c] = bin_dom
+                else:
+                    inferred_t = column_types[c]
+                    this_pad = pad_frac_integer if inferred_t == "integer" else pad_frac_continuous
+                    public_bounds[c] = _bounds_for_number_like(
+                        s,
+                        this_pad,
+                        integer_like=(inferred_t == "integer"),
+                    )
         else:
             column_types[c] = "categorical"
             if args.infer_categories:
@@ -429,19 +441,74 @@ def main() -> None:
                 if 0 < len(u) <= int(args.max_categories):
                     public_categories[c] = sorted(u)
 
+    target_spec: dict[str, Any] | None = None
+    if args.target_spec_file is not None:
+        target_spec = json.loads(args.target_spec_file.read_text())
+        if not isinstance(target_spec, dict):
+            raise SystemExit("--target-spec-file must contain a JSON object")
+    else:
+        targets = _parse_csv_list(args.target_cols)
+        if not targets and target_col:
+            targets = [target_col]
+        if args.survival_event_col and args.survival_time_col:
+            targets = [args.survival_event_col, args.survival_time_col]
+            target_kind = args.target_kind or "survival_pair"
+        elif args.survival_event_col or args.survival_time_col:
+            raise SystemExit("Both --survival-event-col and --survival-time-col must be provided together")
+        else:
+            target_kind = args.target_kind
+        if targets:
+            target_spec = {
+                "targets": targets,
+                "kind": target_kind or ("single" if len(targets) == 1 else "multi_target"),
+                "dtypes": {t: _infer_target_dtype(df, t) for t in targets},
+                "primary_target": target_col,
+            }
+            
+    if target_spec is not None:
+        tcols = target_spec.get("targets")
+        if isinstance(tcols, list) and tcols:
+            existing_dtypes = target_spec.get("dtypes") if isinstance(target_spec.get("dtypes"), dict) else {}
+            normalized_dtypes: dict[str, str] = {}
+            allowed = {"integer", "continuous", "categorical", "ordinal"}
+            for t in [str(x) for x in tcols]:
+                mapped = _target_dtype_from_column_type(column_types.get(t))
+                if mapped is not None:
+                    normalized_dtypes[t] = mapped
+                elif isinstance(existing_dtypes.get(t), str):
+                    raw = str(existing_dtypes[t]).strip().lower()
+                    if raw not in allowed:
+                        normalized_dtypes[t] = _infer_target_dtype(df, t)
+                    else:
+                        normalized_dtypes[t] = raw
+                else:
+                    normalized_dtypes[t] = _infer_target_dtype(df, t)
+            target_spec["dtypes"] = normalized_dtypes
+
     label_domain: list[str] = []
-    if target_col and target_col in df.columns:
-        u = pd.Series(df[target_col], copy=False).astype("string").dropna().unique().tolist()
-        label_domain = sorted([str(x) for x in u])
-        if label_domain:
-            public_categories[target_col] = label_domain
-            column_types[target_col] = "categorical"
+    if target_col and target_col in df.columns and not args.no_publish_label_domain:
+        if column_types.get(target_col) in {"categorical", "ordinal"}:
+            u = pd.Series(df[target_col], copy=False).astype("string").dropna().unique().tolist()
+            u_sorted = sorted([str(x) for x in u])
+            if 0 < len(u_sorted) <= int(args.max_categories):
+                label_domain = u_sorted
+                public_categories[target_col] = label_domain
+
+    if args.no_publish_label_domain:
+        _targets_to_scrub: list[str] = []
+        if target_spec is not None and isinstance(target_spec.get("targets"), list):
+            _targets_to_scrub.extend([str(x) for x in target_spec["targets"]])
+        elif target_col:
+            _targets_to_scrub.append(target_col)
+        for t in _targets_to_scrub:
+            public_categories.pop(t, None)
 
     schema: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "dataset": args.dataset_name or args.data.stem,
         "target_col": target_col,
         "label_domain": label_domain,
+        "missing_value_rates": missing_value_rates,
         "public_bounds": public_bounds,
         "public_categories": public_categories,
         "column_types": column_types,
@@ -463,51 +530,12 @@ def main() -> None:
             "guid_min_match_frac": float(args.guid_min_match_frac),
             "guid_like_columns": guid_like_columns,
             "datetime_output_format": str(args.datetime_output_format),
+            "no_publish_label_domain": bool(args.no_publish_label_domain),
             "column_types_overrides": str(args.column_types) if args.column_types is not None else None,
         },
     }
 
-    target_spec: dict[str, Any] | None = None
-    if args.target_spec_file is not None:
-        target_spec = json.loads(args.target_spec_file.read_text())
-        if not isinstance(target_spec, dict):
-            raise SystemExit("--target-spec-file must contain a JSON object")
-    else:
-        targets = _parse_csv_list(args.target_cols)
-        if not targets and target_col:
-            targets = [target_col]
-        if args.survival_event_col and args.survival_time_col:
-            targets = [args.survival_event_col, args.survival_time_col]
-            target_kind = args.target_kind or "survival_pair"
-        else:
-            target_kind = args.target_kind
-        if targets:
-            target_spec = {
-                "targets": targets,
-                "kind": target_kind or ("single" if len(targets) == 1 else "multi_target"),
-                "dtypes": {t: _infer_target_dtype(df, t) for t in targets},
-                "primary_target": target_col,
-            }
     if target_spec is not None:
-        # Keep target dtypes consistent with resolved column_types when possible.
-        tcols = target_spec.get("targets")
-        if isinstance(tcols, list) and tcols:
-            existing_dtypes = target_spec.get("dtypes") if isinstance(target_spec.get("dtypes"), dict) else {}
-            normalized_dtypes: dict[str, str] = {}
-            allowed = {"integer", "continuous", "categorical", "ordinal"}
-            for t in [str(x) for x in tcols]:
-                mapped = _target_dtype_from_column_type(column_types.get(t))
-                if mapped is not None:
-                    normalized_dtypes[t] = mapped
-                elif isinstance(existing_dtypes.get(t), str):
-                    raw = str(existing_dtypes[t]).strip().lower()
-                    if raw not in allowed:
-                        normalized_dtypes[t] = _infer_target_dtype(df, t)
-                    else:
-                        normalized_dtypes[t] = raw
-                else:
-                    normalized_dtypes[t] = _infer_target_dtype(df, t)
-            target_spec["dtypes"] = normalized_dtypes
         schema["target_spec"] = target_spec
 
     constraints = _build_constraints(

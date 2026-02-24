@@ -24,7 +24,8 @@ def main() -> None:
     schema = json.loads(args.schema.read_text())
     dspec = schema.get("datetime_spec", {}) if isinstance(schema, dict) else {}
     if not isinstance(dspec, dict) or not dspec:
-        raise SystemExit("Schema has no datetime_spec.")
+        print("Note: Schema has no datetime_spec; cleanly exiting render process.")
+        return
 
     out_df = df.copy()
     for col, meta in dspec.items():
