@@ -2,8 +2,6 @@
 
 Self-contained toolkit to generate typed schema contracts from tabular data.
 
-It is designed to be copied into a separate repository and run independently.
-
 ## What this project provides
 
 - `schema_toolkit/prepare_schema.py`
