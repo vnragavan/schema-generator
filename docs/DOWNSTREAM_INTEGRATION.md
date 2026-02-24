@@ -54,8 +54,10 @@ The generic tools strictly map time mathematically via large integer values span
 *   **Usage:** You must train your downstream generative AI strictly against the epoch nanosecond integers (passing them identically as `continuous` scales alongside heart rate or body mass). Do not feed raw strings directly to the neural layers. 
 
 ### `target_spec`
-Often used for supervised machine learning tasks where researchers are creating synthetic data to train predictive classification algorithms.
-*   **Usage:** A downstream tool could use to map conditional data splitting logic strictly toward `primary_target`, or if generating Survival algorithms, ensuring the network structurally identifies the `target_spec["kind"] == "survival_pair"`.
+Often used for supervised machine learning tasks where researchers are creating synthetic data to train predictive classification algorithms, and for evaluators like SDMetrics or SynthCity to calculate Machine Learning Efficacy (predictive utility).
+*   **Usage (`single` / Default):** A downstream tool maps conditional data splitting logic strictly toward `primary_target`, and utility metrics (like F1-score, ROC-AUC, or RMSE) evaluate predictive fidelity of a model trained on synthetic data against real holdout data exclusively for this feature.
+*   **Usage (`survival_pair`):** Structurally forces the downstream networks to identify a time-to-event architecture, ensuring utility metrics calculate Concordance Index (C-Index) or Brier Score jointly modeling `event` probability across `time`.
+*   **Usage (`multi_target`):** When generating a dataset with multiple clinical outcomes (e.g., predicting `ICU_Admission` and `Mortality` simultaneously), downstream evaluators must compute Machine Learning Efficacy metrics for *every* target listed explicitly in `target_spec["targets"]` independently. The holistic dataset utility score should be reported as the average (or worst-case) aggregate across all targeted predictions to ensure the AI hasn't sacrificed the statistical fidelity of one label to overfit the other.
 
 ---
 
