@@ -173,3 +173,11 @@ python schema_toolkit/render_datetime.py \
 
 - If source data is private, inferred metadata should not automatically be treated as public.
 - Review schema output before using it in strict privacy workflows.
+
+## Dataset examples
+
+See `docs/USE_CASES.md` for step-by-step commands and expected outputs for:
+
+- Adult
+- Breast Cancer
+- NCCTG Lung Cancer (survival)
