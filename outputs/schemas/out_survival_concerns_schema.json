@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "dataset": "survival_concerns",
+  "target_col": null,
+  "label_domain": [],
+  "missing_value_rates": {
+    "patient_id": 0.0,
+    "has_diabetes": 0.0,
+    "smoking_status": 0.0,
+    "event_occurred": 0.0,
+    "survival_duration": 0.0
+  },
+  "public_bounds": {
+    "survival_duration": [
+      5.0,
+      300.5
+    ]
+  },
+  "public_categories": {
+    "patient_id": [
+      "P001",
+      "P002",
+      "P003",
+      "P004",
+      "P005"
+    ],
+    "has_diabetes": [
+      "0",
+      "1"
+    ],
+    "smoking_status": [
+      "No",
+      "Yes"
+    ],
+    "event_occurred": [
+      "0",
+      "1"
+    ]
+  },
+  "column_types": {
+    "patient_id": "categorical",
+    "has_diabetes": "ordinal",
+    "smoking_status": "categorical",
+    "event_occurred": "ordinal",
+    "survival_duration": "continuous"
+  },
+  "datetime_spec": {},
+  "provenance": {
+    "generated_at_utc": "2026-02-24T23:52:30.294836+00:00",
+    "source_csv": "data/dummy_survival_concerns.csv",
+    "source_delimiter": ",",
+    "pad_frac": 0.0,
+    "pad_frac_integer": 0.0,
+    "pad_frac_continuous": 0.0,
+    "inferred_categories": true,
+    "max_categories": 200,
+    "inferred_datetimes": false,
+    "datetime_min_parse_frac": 0.95,
+    "inferred_binary_domain": true,
+    "guid_min_match_frac": 0.95,
+    "guid_like_columns": [],
+    "datetime_output_format": "preserve",
+    "no_publish_label_domain": false,
+    "column_types_overrides": null
+  },
+  "target_spec": {
+    "targets": [
+      "event_occurred",
+      "survival_duration"
+    ],
+    "kind": "survival_pair",
+    "dtypes": {
+      "event_occurred": "ordinal",
+      "survival_duration": "continuous"
+    },
+    "primary_target": null
+  },
+  "constraints": {
+    "column_constraints": {
+      "patient_id": {
+        "type": "categorical",
+        "allowed_values": [
+          "P001",
+          "P002",
+          "P003",
+          "P004",
+          "P005"
+        ]
+      },
+      "has_diabetes": {
+        "type": "ordinal",
+        "allowed_values": [
+          "0",
+          "1"
+        ]
+      },
+      "smoking_status": {
+        "type": "categorical",
+        "allowed_values": [
+          "No",
+          "Yes"
+        ]
+      },
+      "event_occurred": {
+        "type": "ordinal",
+        "allowed_values": [
+          "0",
+          "1"
+        ]
+      },
+      "survival_duration": {
+        "type": "continuous",
+        "min": 5.0,
+        "max": 300.5,
+        "min_exclusive": 0
+      }
+    },
+    "cross_column_constraints": [
+      {
+        "name": "survival_pair_definition",
+        "type": "survival_pair",
+        "event_col": "event_occurred",
+        "time_col": "survival_duration",
+        "event_allowed_values": [
+          0,
+          1
+        ],
+        "time_min_exclusive": 0
+      }
+    ],
+    "row_group_constraints": []
+  }
+}

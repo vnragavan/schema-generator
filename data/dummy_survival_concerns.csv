@@ -1,0 +1,6 @@
+patient_id,has_diabetes,smoking_status,event_occurred,survival_duration
+P001,1,Yes,1,45.5
+P002,0,No,0,120.0
+P003,1,No,1,12.2
+P004,0,Yes,0,300.5
+P005,1,Yes,1,5.0
