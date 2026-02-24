@@ -161,7 +161,44 @@ python schema_toolkit/prepare_schema.py \
 
 ---
 
-## 4) Datetime rendering (post-processing synthetic CSVs)
+## 4) Advanced Medical/Survival Routing (Dummy Dataset)
+
+Use this example to see how the toolkit resolves common data structure concerns:
+1. Converting `0-1` numeric columns to boolean domains (`--infer-binary-domain`).
+2. Retaining `Yes/No` textual structures dynamically (`--infer-categories`).
+3. Configuring survival constraints and dropping baseline classification metrics via multi-column inputs.
+
+### Input assumptions
+- CSV path: `data/dummy_survival_concerns.csv`
+- Event column (integer boolean): `event_occurred`
+- Time column (continuous): `survival_duration`
+
+### Command
+```bash
+python schema_toolkit/prepare_schema.py \
+  --data data/dummy_survival_concerns.csv \
+  --out outputs/schemas/out_survival_concerns_schema.json \
+  --dataset-name survival_concerns \
+  --target-cols event_occurred,survival_duration \
+  --target-kind survival_pair \
+  --survival-event-col event_occurred \
+  --survival-time-col survival_duration \
+  --infer-binary-domain \
+  --infer-categories
+```
+
+### Expected output file
+- `outputs/schemas/out_survival_concerns_schema.json`
+
+### Expected output content (high level)
+- Text-category variables (e.g. `Yes/No`) cleanly mapped to `categorical`.
+- Boolean `0-1` numeric arrays forcefully mapped to `ordinal` avoiding continuous padding.
+- `label_domain: []` explicitly emptying to gracefully bypass downstream classifiers.
+- Multi-column `survival_pair` dynamically constraining sequential bounds.
+
+---
+
+## 5) Datetime rendering (post-processing synthetic CSVs)
 
 If a generated/synthetic CSV contains epoch-ns datetime columns and your schema has `datetime_spec`, convert them back to native string format:
 
@@ -180,7 +217,7 @@ Datetime columns referenced by `datetime_spec` are rendered as formatted strings
 
 ---
 
-## 5) Summary of produced artifacts
+## 6) Summary of produced artifacts
 
 From `prepare_schema.py`:
 
@@ -199,7 +236,7 @@ From `render_datetime.py`:
 
 ---
 
-## 6) Dataset references
+## 7) Dataset references
 
 - Adult Census Income (UCI):
   - https://archive.ics.uci.edu/dataset/2/adult
@@ -207,3 +244,5 @@ From `render_datetime.py`:
   - https://scikit-learn.org/stable/datasets/toy_dataset.html#breast-cancer-dataset
 - NCCTG Lung Cancer (survival dataset in `lifelines`):
   - https://lifelines.readthedocs.io/en/latest/lifelines.datasets.html
+- Dummy Survival Concerns:
+  - Synthetic dataset specifically built for demonstrating multi-target and classification inference edge-cases.
