@@ -8,40 +8,40 @@
   ],
   "public_bounds": {
     "inst": [
-      -0.6000000000000001,
-      34.6
+      1,
+      33
     ],
     "time": [
-      -45.85,
-      1072.85
+      5,
+      1022
     ],
     "age": [
-      36.85,
-      84.15
+      39,
+      82
     ],
     "ph.ecog": [
-      -0.15000000000000002,
-      3.15
+      0,
+      3
     ],
     "ph.karno": [
-      47.5,
-      102.5
+      50,
+      100
     ],
     "pat.karno": [
-      26.5,
-      103.5
+      30,
+      100
     ],
     "meal.cal": [
-      -29.200000000000003,
-      2725.2
+      96,
+      2600
     ],
     "wt.loss": [
-      -28.6,
-      72.6
+      -24,
+      68
     ],
     "time_to_event": [
-      -45.85,
-      1072.85
+      5,
+      1022
     ]
   },
   "public_categories": {
@@ -74,10 +74,12 @@
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T18:57:15.393565+00:00",
+    "generated_at_utc": "2026-02-24T19:26:46.573937+00:00",
     "source_csv": "example_data_path_to_csv_file",
     "source_delimiter": ",",
-    "pad_frac": 0.05,
+    "pad_frac": 0.0,
+    "pad_frac_integer": 0.0,
+    "pad_frac_continuous": 0.0,
     "inferred_categories": true,
     "max_categories": 200,
     "inferred_datetimes": true,
@@ -104,13 +106,13 @@
     "column_constraints": {
       "inst": {
         "type": "integer",
-        "min": -0.6000000000000001,
-        "max": 34.6
+        "min": 1,
+        "max": 33
       },
       "time": {
         "type": "integer",
-        "min": -45.85,
-        "max": 1072.85
+        "min": 5,
+        "max": 1022
       },
       "status": {
         "type": "ordinal",
@@ -121,8 +123,8 @@
       },
       "age": {
         "type": "integer",
-        "min": 36.85,
-        "max": 84.15
+        "min": 39,
+        "max": 82
       },
       "sex": {
         "type": "ordinal",
@@ -133,28 +135,28 @@
       },
       "ph.ecog": {
         "type": "integer",
-        "min": -0.15000000000000002,
-        "max": 3.15
+        "min": 0,
+        "max": 3
       },
       "ph.karno": {
         "type": "integer",
-        "min": 47.5,
-        "max": 102.5
+        "min": 50,
+        "max": 100
       },
       "pat.karno": {
         "type": "integer",
-        "min": 26.5,
-        "max": 103.5
+        "min": 30,
+        "max": 100
       },
       "meal.cal": {
         "type": "integer",
-        "min": -29.200000000000003,
-        "max": 2725.2
+        "min": 96,
+        "max": 2600
       },
       "wt.loss": {
         "type": "integer",
-        "min": -28.6,
-        "max": 72.6
+        "min": -24,
+        "max": 68
       },
       "time_to_event": {
         "min_exclusive": 0

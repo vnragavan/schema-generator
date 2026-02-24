@@ -74,8 +74,17 @@ This document is the complete CLI reference for:
   - You can set explicit delimiter such as `,`, `;`, `\t`, `|`.
 
 - `--pad-frac <float>`
-  - **Default:** `0.05`
-  - Padding fraction for numeric bounds in `public_bounds`.
+  - **Default:** `0.0`
+  - Global fallback padding fraction for numeric bounds in `public_bounds`.
+
+- `--pad-frac-integer <float>`
+  - **Default:** unset (falls back to `--pad-frac`)
+  - Padding fraction for columns typed as `integer`.
+  - Integer bounds are rounded outward to preserve integer semantics.
+
+- `--pad-frac-continuous <float>`
+  - **Default:** unset (falls back to `--pad-frac`)
+  - Padding fraction for columns typed as `continuous`.
 
 - `--infer-categories`
   - **Default:** off
@@ -150,6 +159,11 @@ This document is the complete CLI reference for:
   - `column_constraints`: updated by key
   - `cross_column_constraints`: appended
   - `row_group_constraints`: appended
+- Padding precedence is:
+  - `--pad-frac-integer` for `integer` columns when provided
+  - `--pad-frac-continuous` for `continuous` columns when provided
+  - otherwise global `--pad-frac`
+- `categorical`/`ordinal` columns do not use numeric padding.
 - Datetime parsing only runs when `--infer-datetimes` is enabled.
 
 ---
@@ -166,7 +180,9 @@ python schema_toolkit/prepare_schema.py \
   --target-spec-file examples/target_spec.sample.json \
   --constraints-file examples/constraints.sample.json \
   --delimiter auto \
-  --pad-frac 0.05 \
+  --pad-frac 0.0 \
+  --pad-frac-integer 0.0 \
+  --pad-frac-continuous 0.02 \
   --infer-categories \
   --max-categories 200 \
   --infer-binary-domain \

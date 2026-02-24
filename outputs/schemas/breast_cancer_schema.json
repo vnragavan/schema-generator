@@ -8,124 +8,124 @@
   ],
   "public_bounds": {
     "mean radius": [
-      5.92455,
-      29.166449999999998
+      6.981,
+      28.11
     ],
     "mean texture": [
-      8.2315,
-      40.7585
+      9.71,
+      39.28
     ],
     "mean perimeter": [
-      36.5545,
-      195.7355
+      43.79,
+      188.5
     ],
     "mean area": [
-      25.625,
-      2618.875
+      143.5,
+      2501.0
     ],
     "mean smoothness": [
-      0.0470915,
-      0.1689385
+      0.05263,
+      0.1634
     ],
     "mean compactness": [
-      0.003079000000000002,
-      0.361701
+      0.01938,
+      0.3454
     ],
     "mean concavity": [
-      -0.02134,
-      0.44814000000000004
+      0.0,
+      0.4268
     ],
     "mean concave points": [
-      -0.01006,
-      0.21126
+      0.0,
+      0.2012
     ],
     "mean symmetry": [
-      0.09609999999999999,
-      0.3139
+      0.106,
+      0.304
     ],
     "mean fractal dimension": [
-      0.047585999999999996,
-      0.099814
+      0.04996,
+      0.09744
     ],
     "radius error": [
-      -0.02657500000000003,
-      3.0110750000000004
+      0.1115,
+      2.873
     ],
     "texture error": [
-      0.13396000000000002,
-      5.11124
+      0.3602,
+      4.885
     ],
     "perimeter error": [
-      -0.30415000000000003,
-      23.041150000000002
+      0.757,
+      21.98
     ],
     "area error": [
-      -19.967900000000004,
-      568.9699
+      6.802,
+      542.2
     ],
     "smoothness error": [
-      0.0002421499999999998,
-      0.03260085
+      0.001713,
+      0.03113
     ],
     "compactness error": [
-      -0.0044054,
-      0.1420574
+      0.002252,
+      0.1354
     ],
     "concavity error": [
-      -0.0198,
-      0.4158
+      0.0,
+      0.396
     ],
     "concave points error": [
-      -0.0026395,
-      0.0554295
+      0.0,
+      0.05279
     ],
     "symmetry error": [
-      0.0043286,
-      0.0825034
+      0.007882,
+      0.07895
     ],
     "fractal dimension error": [
-      -0.00055246,
-      0.03128726
+      0.0008948,
+      0.02984
     ],
     "worst radius": [
-      6.5245,
-      37.445499999999996
+      7.93,
+      36.04
     ],
     "worst texture": [
-      10.144,
-      51.416
+      12.02,
+      49.54
     ],
     "worst perimeter": [
-      40.37049999999999,
-      261.23949999999996
+      50.41,
+      251.2
     ],
     "worst area": [
-      -18.240000000000038,
-      4457.44
+      185.2,
+      4254.0
     ],
     "worst smoothness": [
-      0.0635985,
-      0.2301715
+      0.07117,
+      0.2226
     ],
     "worst compactness": [
-      -0.024245500000000007,
-      1.1095355
+      0.02729,
+      1.058
     ],
     "worst concavity": [
-      -0.0626,
-      1.3146
+      0.0,
+      1.252
     ],
     "worst concave points": [
-      -0.01455,
-      0.30555
+      0.0,
+      0.291
     ],
     "worst symmetry": [
-      0.131135,
-      0.6891649999999999
+      0.1565,
+      0.6638
     ],
     "worst fractal dimension": [
-      0.047417,
-      0.21512299999999998
+      0.05504,
+      0.2075
     ]
   },
   "public_categories": {
@@ -169,10 +169,12 @@
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T18:57:14.839658+00:00",
+    "generated_at_utc": "2026-02-24T19:26:45.902705+00:00",
     "source_csv": "example_data_path_to_csv_file",
     "source_delimiter": ",",
-    "pad_frac": 0.05,
+    "pad_frac": 0.0,
+    "pad_frac_integer": 0.0,
+    "pad_frac_continuous": 0.0,
     "inferred_categories": true,
     "max_categories": 200,
     "inferred_datetimes": true,
@@ -197,153 +199,153 @@
     "column_constraints": {
       "mean radius": {
         "type": "continuous",
-        "min": 5.92455,
-        "max": 29.166449999999998
+        "min": 6.981,
+        "max": 28.11
       },
       "mean texture": {
         "type": "continuous",
-        "min": 8.2315,
-        "max": 40.7585
+        "min": 9.71,
+        "max": 39.28
       },
       "mean perimeter": {
         "type": "continuous",
-        "min": 36.5545,
-        "max": 195.7355
+        "min": 43.79,
+        "max": 188.5
       },
       "mean area": {
         "type": "continuous",
-        "min": 25.625,
-        "max": 2618.875
+        "min": 143.5,
+        "max": 2501.0
       },
       "mean smoothness": {
         "type": "continuous",
-        "min": 0.0470915,
-        "max": 0.1689385
+        "min": 0.05263,
+        "max": 0.1634
       },
       "mean compactness": {
         "type": "continuous",
-        "min": 0.003079000000000002,
-        "max": 0.361701
+        "min": 0.01938,
+        "max": 0.3454
       },
       "mean concavity": {
         "type": "continuous",
-        "min": -0.02134,
-        "max": 0.44814000000000004
+        "min": 0.0,
+        "max": 0.4268
       },
       "mean concave points": {
         "type": "continuous",
-        "min": -0.01006,
-        "max": 0.21126
+        "min": 0.0,
+        "max": 0.2012
       },
       "mean symmetry": {
         "type": "continuous",
-        "min": 0.09609999999999999,
-        "max": 0.3139
+        "min": 0.106,
+        "max": 0.304
       },
       "mean fractal dimension": {
         "type": "continuous",
-        "min": 0.047585999999999996,
-        "max": 0.099814
+        "min": 0.04996,
+        "max": 0.09744
       },
       "radius error": {
         "type": "continuous",
-        "min": -0.02657500000000003,
-        "max": 3.0110750000000004
+        "min": 0.1115,
+        "max": 2.873
       },
       "texture error": {
         "type": "continuous",
-        "min": 0.13396000000000002,
-        "max": 5.11124
+        "min": 0.3602,
+        "max": 4.885
       },
       "perimeter error": {
         "type": "continuous",
-        "min": -0.30415000000000003,
-        "max": 23.041150000000002
+        "min": 0.757,
+        "max": 21.98
       },
       "area error": {
         "type": "continuous",
-        "min": -19.967900000000004,
-        "max": 568.9699
+        "min": 6.802,
+        "max": 542.2
       },
       "smoothness error": {
         "type": "continuous",
-        "min": 0.0002421499999999998,
-        "max": 0.03260085
+        "min": 0.001713,
+        "max": 0.03113
       },
       "compactness error": {
         "type": "continuous",
-        "min": -0.0044054,
-        "max": 0.1420574
+        "min": 0.002252,
+        "max": 0.1354
       },
       "concavity error": {
         "type": "continuous",
-        "min": -0.0198,
-        "max": 0.4158
+        "min": 0.0,
+        "max": 0.396
       },
       "concave points error": {
         "type": "continuous",
-        "min": -0.0026395,
-        "max": 0.0554295
+        "min": 0.0,
+        "max": 0.05279
       },
       "symmetry error": {
         "type": "continuous",
-        "min": 0.0043286,
-        "max": 0.0825034
+        "min": 0.007882,
+        "max": 0.07895
       },
       "fractal dimension error": {
         "type": "continuous",
-        "min": -0.00055246,
-        "max": 0.03128726
+        "min": 0.0008948,
+        "max": 0.02984
       },
       "worst radius": {
         "type": "continuous",
-        "min": 6.5245,
-        "max": 37.445499999999996
+        "min": 7.93,
+        "max": 36.04
       },
       "worst texture": {
         "type": "continuous",
-        "min": 10.144,
-        "max": 51.416
+        "min": 12.02,
+        "max": 49.54
       },
       "worst perimeter": {
         "type": "continuous",
-        "min": 40.37049999999999,
-        "max": 261.23949999999996
+        "min": 50.41,
+        "max": 251.2
       },
       "worst area": {
         "type": "continuous",
-        "min": -18.240000000000038,
-        "max": 4457.44
+        "min": 185.2,
+        "max": 4254.0
       },
       "worst smoothness": {
         "type": "continuous",
-        "min": 0.0635985,
-        "max": 0.2301715
+        "min": 0.07117,
+        "max": 0.2226
       },
       "worst compactness": {
         "type": "continuous",
-        "min": -0.024245500000000007,
-        "max": 1.1095355
+        "min": 0.02729,
+        "max": 1.058
       },
       "worst concavity": {
         "type": "continuous",
-        "min": -0.0626,
-        "max": 1.3146
+        "min": 0.0,
+        "max": 1.252
       },
       "worst concave points": {
         "type": "continuous",
-        "min": -0.01455,
-        "max": 0.30555
+        "min": 0.0,
+        "max": 0.291
       },
       "worst symmetry": {
         "type": "continuous",
-        "min": 0.131135,
-        "max": 0.6891649999999999
+        "min": 0.1565,
+        "max": 0.6638
       },
       "worst fractal dimension": {
         "type": "continuous",
-        "min": 0.047417,
-        "max": 0.21512299999999998
+        "min": 0.05504,
+        "max": 0.2075
       },
       "target": {
         "type": "categorical",

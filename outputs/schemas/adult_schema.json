@@ -8,24 +8,24 @@
   ],
   "public_bounds": {
     "age": [
-      13.35,
-      93.65
+      17,
+      90
     ],
     "fnlwgt": [
-      -59777.8,
-      1558251.8
+      13769,
+      1484705
     ],
     "capital-gain": [
-      -4999.950000000001,
-      104998.95
+      0,
+      99999
     ],
     "capital-loss": [
-      -217.8,
-      4573.8
+      0,
+      4356
     ],
     "hours-per-week": [
-      -3.9000000000000004,
-      103.9
+      1,
+      99
     ]
   },
   "public_categories": {
@@ -174,10 +174,12 @@
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T18:57:00.453959+00:00",
+    "generated_at_utc": "2026-02-24T19:26:45.107208+00:00",
     "source_csv": "example_data_path_to_csv_file",
     "source_delimiter": ",",
-    "pad_frac": 0.05,
+    "pad_frac": 0.0,
+    "pad_frac_integer": 0.0,
+    "pad_frac_continuous": 0.0,
     "inferred_categories": true,
     "max_categories": 200,
     "inferred_datetimes": true,
@@ -202,8 +204,8 @@
     "column_constraints": {
       "age": {
         "type": "integer",
-        "min": 13.35,
-        "max": 93.65
+        "min": 17,
+        "max": 90
       },
       "workclass": {
         "type": "categorical",
@@ -219,8 +221,8 @@
       },
       "fnlwgt": {
         "type": "integer",
-        "min": -59777.8,
-        "max": 1558251.8
+        "min": 13769,
+        "max": 1484705
       },
       "education": {
         "type": "categorical",
@@ -314,18 +316,18 @@
       },
       "capital-gain": {
         "type": "integer",
-        "min": -4999.950000000001,
-        "max": 104998.95
+        "min": 0,
+        "max": 99999
       },
       "capital-loss": {
         "type": "integer",
-        "min": -217.8,
-        "max": 4573.8
+        "min": 0,
+        "max": 4356
       },
       "hours-per-week": {
         "type": "integer",
-        "min": -3.9000000000000004,
-        "max": 103.9
+        "min": 1,
+        "max": 99
       },
       "native-country": {
         "type": "categorical",

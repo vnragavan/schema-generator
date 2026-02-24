@@ -156,7 +156,7 @@ def _is_numeric_series(s: pd.Series) -> bool:
     return False
 
 
-def _numeric_bounds(s: pd.Series, pad_frac: float) -> list[float]:
+def _numeric_bounds(s: pd.Series, pad_frac: float, *, integer_like: bool = False) -> list[float]:
     x = pd.to_numeric(s, errors="coerce").to_numpy(dtype=float)
     x = x[np.isfinite(x)]
     if x.size == 0:
@@ -164,8 +164,16 @@ def _numeric_bounds(s: pd.Series, pad_frac: float) -> list[float]:
     vmin = float(np.min(x))
     vmax = float(np.max(x))
     span = vmax - vmin
-    pad = (pad_frac * span) if span > 0 else max(abs(vmin) * pad_frac, 1.0)
-    return [vmin - pad, vmax + pad]
+    if span > 0:
+        pad = pad_frac * span
+    else:
+        # Keep constant-column bounds exact unless user asked for non-zero padding.
+        pad = max(abs(vmin) * pad_frac, 1.0) if pad_frac > 0 else 0.0
+    lo = vmin - pad
+    hi = vmax + pad
+    if integer_like:
+        return [int(np.floor(lo)), int(np.ceil(hi))]
+    return [lo, hi]
 
 
 def _binary_integer_domain_values(s: pd.Series) -> list[str] | None:
@@ -258,7 +266,19 @@ def main() -> None:
     ap.add_argument("--target-spec-file", type=Path, default=None)
     ap.add_argument("--constraints-file", type=Path, default=None)
     ap.add_argument("--delimiter", type=str, default="auto")
-    ap.add_argument("--pad-frac", type=float, default=0.05)
+    ap.add_argument("--pad-frac", type=float, default=0.0)
+    ap.add_argument(
+        "--pad-frac-integer",
+        type=float,
+        default=None,
+        help="Padding fraction for integer columns; falls back to --pad-frac if unset",
+    )
+    ap.add_argument(
+        "--pad-frac-continuous",
+        type=float,
+        default=None,
+        help="Padding fraction for continuous columns; falls back to --pad-frac if unset",
+    )
     ap.add_argument("--infer-categories", action="store_true")
     ap.add_argument("--max-categories", type=int, default=200)
     ap.add_argument("--infer-binary-domain", action="store_true")
@@ -283,6 +303,15 @@ def main() -> None:
     column_types: dict[str, str] = {}
     datetime_spec: dict[str, dict[str, Any]] = {}
     guid_like_columns: list[str] = []
+    pad_frac_global = float(args.pad_frac)
+    pad_frac_integer = (
+        float(args.pad_frac_integer) if args.pad_frac_integer is not None else pad_frac_global
+    )
+    pad_frac_continuous = (
+        float(args.pad_frac_continuous)
+        if args.pad_frac_continuous is not None
+        else pad_frac_global
+    )
 
     type_overrides: dict[str, Any] = {}
     if args.column_types is not None:
@@ -330,7 +359,12 @@ def main() -> None:
                     raise SystemExit(f"--column-types[{c}].domain must be list")
                 public_categories[c] = [str(x) for x in dom]
             elif t in {"continuous", "integer"} and _is_numeric_series(s):
-                public_bounds[c] = _numeric_bounds(s, float(args.pad_frac))
+                this_pad = pad_frac_integer if t == "integer" else pad_frac_continuous
+                public_bounds[c] = _numeric_bounds(
+                    s,
+                    this_pad,
+                    integer_like=(t == "integer"),
+                )
             continue
 
         if pd.api.types.is_bool_dtype(s0):
@@ -360,7 +394,13 @@ def main() -> None:
                 column_types[c] = "ordinal"
                 public_categories[c] = bin_dom
             else:
-                public_bounds[c] = _numeric_bounds(s, float(args.pad_frac))
+                inferred_t = column_types[c]
+                this_pad = pad_frac_integer if inferred_t == "integer" else pad_frac_continuous
+                public_bounds[c] = _numeric_bounds(
+                    s,
+                    this_pad,
+                    integer_like=(inferred_t == "integer"),
+                )
         else:
             column_types[c] = "categorical"
             if args.infer_categories:
@@ -392,7 +432,9 @@ def main() -> None:
                 "example_data_path_to_csv_file" if bool(args.redact_source_path) else str(args.data)
             ),
             "source_delimiter": delimiter,
-            "pad_frac": float(args.pad_frac),
+            "pad_frac": pad_frac_global,
+            "pad_frac_integer": pad_frac_integer,
+            "pad_frac_continuous": pad_frac_continuous,
             "inferred_categories": bool(args.infer_categories),
             "max_categories": int(args.max_categories),
             "inferred_datetimes": bool(args.infer_datetimes),
