@@ -1,0 +1,5 @@
+patient_id,time_to_event,event_occurred,treatment_arm,biomarker_level
+6b29fc40-ca47-1067-b31d-00dd010662d5,15.5,1,Control,12.4
+6b29fc40-ca47-1067-b31d-00dd010662d6,42.0,0,Treatment,8.9
+6b29fc40-ca47-1067-b31d-00dd010662d7,5.2,1,Treatment,15.1
+6b29fc40-ca47-1067-b31d-00dd010662d8,100.1,0,Control,9.0

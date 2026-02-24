@@ -174,6 +174,7 @@ python schema_toolkit/render_datetime.py \
 - `dataset`
 - `target_col`
 - `label_domain`
+- `missing_value_rates`: *A mapping of every feature to its respective percentage of NaN/null values found during the extraction phase.*
 - `public_bounds`: *For each numeric entity, a discrete 2-element index `[min, max]` mapping mathematical bounds extracted strictly across the feature distribution directly, natively unpadded structurally internally without active `--pad-frac`.*
 - `public_categories`: *For categorical and ordinal targets, a recursively sorted explicit array listing comprehensively resolving non-NaN strings observed natively directly.* 
 - `column_types`

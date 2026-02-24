@@ -1,0 +1,5 @@
+patient_id,age_years,admission_datetime,discharge_datetime,heart_rate_bpm,procedure_cost,medication_cost,room_board_cost,total_hospital_cost,pregnancy_status,biological_sex,icd_10_code,is_deceased,hospital_branch
+6b29fc40-ca47-1067-b31d-00dd010662da,45,2023-01-01T10:00:00,2023-01-05T14:30:00,75,1000.50,200.00,800.00,2000.50,1,F,E11.9,0,North
+6b29fc40-ca47-1067-b31d-00dd010662db,60,2023-01-02T09:15:00,2023-01-10T11:00:00,85,2000.00,400.00,1600.00,4000.00,0,M,I10.,1,South
+6b29fc40-ca47-1067-b31d-00dd010662dc,30,2023-01-05T18:00:00,2023-01-07T08:45:00,65,500.00,50.00,450.00,1000.00,0,F,J00.,0,East
+6b29fc40-ca47-1067-b31d-00dd010662dd,,2023-01-06T12:00:00,,,1500.00,100.00,600.00,2200.00,0,M,K21.9,0,West

@@ -12,6 +12,13 @@ The standard defines **six fundamental vocabularies** capable of capturing the p
 **Purpose:** Enforces an absolute boundary where one column must mathematically be less than or equal to another. Highly critical for the "Arrow of Time" in healthcare or upper limit physics.
 **Location:** `cross_column_constraints`
 
+### Parameters:
+- `constraint_class` (string): Must be `"Inequality"`.
+- `name` (string): Human-readable identifier.
+- `low_column` (string): The feature whose value must be smaller/earlier.
+- `high_column` (string): The feature whose value must be larger/later.
+- `strict_boundaries` (boolean): If `true`, $A < B$. If `false` (default), permits $A \le B$.
+
 ### Medical Example:
 A patient cannot be discharged before they are admitted.
 ```json
@@ -29,6 +36,12 @@ A patient cannot be discharged before they are admitted.
 ## 2. FixedCombinations (Logical Gates & Implication)
 **Purpose:** Defines the whitelist of permissible intersections between categorical variables. This prevents mutually exclusive biological traits or contradictory diagnoses from appearing in the same synthetic patient.
 **Location:** `cross_column_constraints`
+
+### Parameters:
+- `constraint_class` (string): Must be `"FixedCombinations"`.
+- `name` (string): Human-readable identifier.
+- `columns` (list of strings): The categorical features being interlocked.
+- `valid_combinations` (list of lists): The exclusive whitelist of permissible intersections. The index ordering inside the child arrays must strictly map to the `columns` array. Any AI-generated combination missing from this list is rejected.
 
 ### Medical Example:
 Pregnancy logic implies strict correlation with biological sex. Males cannot have a pregnant status.
@@ -51,6 +64,13 @@ Pregnancy logic implies strict correlation with biological sex. Males cannot hav
 **Purpose:** Guarantees that a parent variable equals the strict mathematical sum of its constituent child variables. Extremely important for clinical scoring systems and health economic cost accounting.
 **Location:** `cross_column_constraints`
 
+### Parameters:
+- `constraint_class` (string): Must be `"CompositionalSum"`.
+- `name` (string): Human-readable identifier.
+- `total_column` (string): The parent target variable representing the sum.
+- `component_columns` (list of strings): Child variables mathematically composed to equal the target.
+- `tolerance` (float): Allowed floating-point drift (e.g., `0.01` handles minor decimal anomalies).
+
 ### Medical Example:
 A patient's total hospital cost must exactly match the sum of itemized billing components.
 ```json
@@ -68,6 +88,13 @@ A patient's total hospital cost must exactly match the sum of itemized billing c
 ## 4. PiecewiseBounds (Dynamic Reference Ranges)
 **Purpose:** Shifts mathematical minimum/maximum boundaries dynamically based on the state of a continuous conditioning variable (like Age or Weight).
 **Location:** `cross_column_constraints`
+
+### Parameters:
+- `constraint_class` (string): Must be `"PiecewiseBounds"`.
+- `name` (string): Human-readable identifier.
+- `target_column` (string): The variable whose statistical limits will be clamped dynamically.
+- `condition_column` (string): The independent variable driving the threshold shifts.
+- `conditions` (list of objects): Logical rules mapping evaluation strings (like `"< 1"`) to discrete `"bounds"` (`min`/`max` limits). Evaluated sequentially.
 
 ### Medical Example:
 Resting heart rates have fundamentally different acceptable bounds depending on the age of the patient.
@@ -96,6 +123,13 @@ Resting heart rates have fundamentally different acceptable bounds depending on 
 **Purpose:** Validates row-by-row temporal progression for longitudinal panel data, ensuring chronological sorting or unidirectional disease progression for a grouped entity.
 **Location:** `row_group_constraints`
 
+### Parameters:
+- `constraint_class` (string): Must be `"MonotonicOrdering"`.
+- `name` (string): Human-readable identifier.
+- `entity_column` (string): The ID/Group that structurally couples rows together into journeys (e.g. `patient_id`).
+- `sort_column` (string): The longitudinal measurement variable (timelines or progression indices).
+- `trend` (string): Enum validating progression vectors: `"increasing"`, `"decreasing"`, `"strictly_increasing"`, `"strictly_decreasing"`.
+
 ### Medical Example:
 A patient's visits over time must run sequentially forward.
 ```json
@@ -113,6 +147,10 @@ A patient's visits over time must run sequentially forward.
 ## 6. RegexMatch (Strict Lexical Formatting)
 **Purpose:** Preserves syntactic validation rather than mathematical validation, ensuring output strings map accurately to complex international coding definitions.
 **Location:** `column_constraints`
+
+### Parameters:
+- `constraint_class` (string): Must be `"RegexMatch"`.
+- `pattern` (string): The definitive Regex expression syntax required for valid parsing. Downstream generators construct strings constrained firmly by this blueprint.
 
 ### Medical Example:
 ICD-10 clinical diagnostic codes must strictly follow their predefined alphanumeric pattern (Letter, Two Digits, Dot, Trailing Digits) to be useful for downstream systems.
