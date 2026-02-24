@@ -1,11 +1,28 @@
 {
-  "schema_version": "1.3.0",
+  "schema_version": "1.0.0",
   "dataset": "adult",
   "target_col": "income",
   "label_domain": [
     "<=50K",
     ">50K"
   ],
+  "missing_value_rates": {
+    "age": 0.0,
+    "workclass": 0.0,
+    "fnlwgt": 0.0,
+    "education": 0.0,
+    "education-num": 0.0,
+    "marital-status": 0.0,
+    "occupation": 0.0,
+    "relationship": 0.0,
+    "race": 0.0,
+    "sex": 0.0,
+    "capital-gain": 0.0,
+    "capital-loss": 0.0,
+    "hours-per-week": 0.0,
+    "native-country": 0.0,
+    "income": 0.0
+  },
   "public_bounds": {
     "age": [
       17,
@@ -174,8 +191,8 @@
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T19:40:15.966708+00:00",
-    "source_csv": "example_data_path_to_csv_file",
+    "generated_at_utc": "2026-02-24T23:06:25.373384+00:00",
+    "source_csv": "data/adult.csv",
     "source_delimiter": ",",
     "pad_frac": 0.0,
     "pad_frac_integer": 0.0,
@@ -188,7 +205,8 @@
     "guid_min_match_frac": 0.95,
     "guid_like_columns": [],
     "datetime_output_format": "preserve",
-    "column_types_overrides": "examples/column_types.sample.json"
+    "no_publish_label_domain": false,
+    "column_types_overrides": "inputs/schemas/column_types.sample.json"
   },
   "target_spec": {
     "targets": [
