@@ -4,7 +4,7 @@ Self-contained toolkit to generate typed schema contracts from tabular data.
 
 ## What this project provides
 
-> **Privacy Note:** Be heavily aware that `public_bounds` statically records the exact mathematical minimum and maximum boundaries of each processed numeric column by default. Additionally, `public_categories` functionally enumerates *all* uniquely occurring strings inside categorical variables natively verbatim. Finally, `provenance.source_csv` stamps your exact operating OS file-structure into the json object automatically. **You should review these fields carefully before distributing a schema publicly.** Best practice dictations advise adopting `--pad-frac`, restricting domains firmly using `--max-categories`, and actively applying `--redact-source-path` to mitigate PII structural exposures.
+> **Privacy Note:** Be aware that `public_bounds` records the exact minimum and maximum of each processed numeric column by default. Additionally, `public_categories` lists all unique values for categorical variables. Finally, `provenance.source_csv` saves your local file path into the json object. **You should review these fields carefully before distributing a schema publicly.** Best practices advise using `--pad-frac`, restricting domains firmly with `--max-categories`, and using `--redact-source-path` to mitigate PII exposures.
 
 - `schema_toolkit/prepare_schema.py`
   - Generates a schema JSON from CSV/TSV-like input.
@@ -43,7 +43,6 @@ python schema_toolkit/prepare_schema.py \
   --target-col target \
   --infer-categories \
   --infer-binary-domain \
-  --infer-datetimes
   --infer-datetimes
 ```
 
@@ -89,7 +88,7 @@ Example:
 
 Detailed reference: `docs/TARGET_SPEC.md`
 
-*(Note: Within survival pairing array lists, `targets[0]` always defaults identically into the Event component, while `targets[1]` permanently attaches as the Time component).*
+*(Note: Within survival pairing targets, `targets[0]` acts as the Event component, and `targets[1]` acts as the Time component).*
 
 ### 3) Additional constraints (`--constraints-file`)
 
@@ -150,7 +149,7 @@ python schema_toolkit/prepare_schema.py \
 - Original rendering intent recorded in `datetime_spec`.
 - Use `render_datetime.py` to convert synthesized epoch-ns datetime columns back to formatted strings.
 
-**Datetime Algorithm Specifications:** When the `--infer-datetimes` flag passes activation checks, the software cascades strings against 5 core parse strategies (UTC combinations of mixed, standard, dayfirst, yearfirst, and bidirectional). Passing minimum fractions matching the `--datetime-min-parse-frac` threshold enforces datetime typings. *Note:* Because random sampling is deactivated entirely, extremely large multi-million row matrices scanning iteratively against date permutations can incur large execution loops. 
+**Datetime Algorithm Specifications:** When the `--infer-datetimes` flag is used, the software attempts to parse strings using 5 core formats. Setting `--datetime-min-parse-frac` threshold determines whether a column is considered a datetime. *Note:* Processing very large datasets across multiple date permutations can take a long time. 
 
 Example:
 
@@ -175,8 +174,8 @@ python schema_toolkit/render_datetime.py \
 - `target_col`
 - `label_domain`
 - `missing_value_rates`: *A mapping of every feature to its respective percentage of NaN/null values found during the extraction phase.*
-- `public_bounds`: *For each numeric entity, a discrete 2-element index `[min, max]` mapping mathematical bounds extracted strictly across the feature distribution directly, natively unpadded structurally internally without active `--pad-frac`.*
-- `public_categories`: *For categorical and ordinal targets, a recursively sorted explicit array listing comprehensively resolving non-NaN strings observed natively directly.* 
+- `public_bounds`: *For each numeric column, a `[min, max]` array. These bounds are exact unless `--pad-frac` is used to add padding.*
+- `public_categories`: *For categorical and ordinal targets, a sorted list of all unique non-null values.* 
 - `column_types`
 - `datetime_spec`
 - `target_spec` (optional)
@@ -184,11 +183,11 @@ python schema_toolkit/render_datetime.py \
   - `column_constraints`
   - `cross_column_constraints`
   - `row_group_constraints`
-- `provenance`: *Diagnostic footprint capturing timestamps (`generated_at_utc`), explicit boolean CLI execution parameters utilized globally natively strings, and raw source pathways mapping recursively to the `source_csv` structurally.*
+- `provenance`: *Diagnostic footprint capturing timestamps (`generated_at_utc`), execution parameters, and the original `source_csv` path.*
 
 ## Notes
 
-- **Warning:** Executing the internal `--infer-binary-domain` command does not functionally merely attach standard array domains locally onto existing binary sets. Activating this setting actively fundamentally strips mapping configurations promoting arrays natively outward toward `ordinal` structures functionally altering downstream schemas significantly permanently.
+- **Warning:** Using `--infer-binary-domain` forces integer columns with exactly two values into `ordinal` categorical structures.
 - If source data is private, inferred metadata should not automatically be treated as public.
 - Review schema output carefully before using it globally across privacy workflows structurally. Validations and missing components should be mapped formally using reference `docs/MISSING_DATA.md` and `docs/PUBLIC_METADATA.md`.
 
