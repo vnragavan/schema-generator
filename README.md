@@ -62,6 +62,8 @@ Example:
 }
 ```
 
+Detailed reference: `docs/COLUMN_TYPES.md`
+
 ### 2) Target spec file (`--target-spec-file`)
 
 Use this to define multi-target or survival semantics in one file.
@@ -79,6 +81,8 @@ Example:
   }
 }
 ```
+
+Detailed reference: `docs/TARGET_SPEC.md`
 
 ### 3) Additional constraints (`--constraints-file`)
 
@@ -113,6 +117,8 @@ Example:
   ]
 }
 ```
+
+Detailed reference: `docs/CONSTRAINTS.md`
 
 ## Full command (with additional files)
 
