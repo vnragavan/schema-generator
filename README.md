@@ -181,3 +181,9 @@ See `docs/USE_CASES.md` for step-by-step commands and expected outputs for:
 - Adult
 - Breast Cancer
 - NCCTG Lung Cancer (survival)
+
+Pre-generated example outputs are available under:
+
+- `outputs/schemas/adult_schema.json`
+- `outputs/schemas/breast_cancer_schema.json`
+- `outputs/schemas/ncctg_lung_schema.json`

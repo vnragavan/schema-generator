@@ -196,3 +196,14 @@ From `prepare_schema.py`:
 From `render_datetime.py`:
 
 - One rendered CSV at `--out` with datetime strings (replacing source columns unless `--keep-original` is used).
+
+---
+
+## 6) Dataset references
+
+- Adult Census Income (UCI):
+  - https://archive.ics.uci.edu/dataset/2/adult
+- Breast Cancer Wisconsin (Diagnostic):
+  - https://scikit-learn.org/stable/datasets/toy_dataset.html#breast-cancer-dataset
+- NCCTG Lung Cancer (survival dataset in `lifelines`):
+  - https://lifelines.readthedocs.io/en/latest/lifelines.datasets.html

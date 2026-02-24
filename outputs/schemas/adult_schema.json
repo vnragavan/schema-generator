@@ -1,0 +1,387 @@
+{
+  "schema_version": "1.3.0",
+  "dataset": "adult",
+  "target_col": "income",
+  "label_domain": [
+    "<=50K",
+    ">50K"
+  ],
+  "public_bounds": {
+    "age": [
+      13.35,
+      93.65
+    ],
+    "fnlwgt": [
+      -59777.8,
+      1558251.8
+    ],
+    "capital-gain": [
+      -4999.950000000001,
+      104998.95
+    ],
+    "capital-loss": [
+      -217.8,
+      4573.8
+    ],
+    "hours-per-week": [
+      -3.9000000000000004,
+      103.9
+    ]
+  },
+  "public_categories": {
+    "workclass": [
+      "Federal-gov",
+      "Local-gov",
+      "Private",
+      "Self-emp-inc",
+      "Self-emp-not-inc",
+      "State-gov",
+      "Without-pay"
+    ],
+    "education": [
+      "10th",
+      "11th",
+      "12th",
+      "1st-4th",
+      "5th-6th",
+      "7th-8th",
+      "9th",
+      "Assoc-acdm",
+      "Assoc-voc",
+      "Bachelors",
+      "Doctorate",
+      "HS-grad",
+      "Masters",
+      "Preschool",
+      "Prof-school",
+      "Some-college"
+    ],
+    "education-num": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "marital-status": [
+      "Divorced",
+      "Married-AF-spouse",
+      "Married-civ-spouse",
+      "Married-spouse-absent",
+      "Never-married",
+      "Separated",
+      "Widowed"
+    ],
+    "occupation": [
+      "Adm-clerical",
+      "Armed-Forces",
+      "Craft-repair",
+      "Exec-managerial",
+      "Farming-fishing",
+      "Handlers-cleaners",
+      "Machine-op-inspct",
+      "Other-service",
+      "Priv-house-serv",
+      "Prof-specialty",
+      "Protective-serv",
+      "Sales",
+      "Tech-support",
+      "Transport-moving"
+    ],
+    "relationship": [
+      "Husband",
+      "Not-in-family",
+      "Other-relative",
+      "Own-child",
+      "Unmarried",
+      "Wife"
+    ],
+    "race": [
+      "Amer-Indian-Eskimo",
+      "Asian-Pac-Islander",
+      "Black",
+      "Other",
+      "White"
+    ],
+    "sex": [
+      "Female",
+      "Male"
+    ],
+    "native-country": [
+      "Cambodia",
+      "Canada",
+      "China",
+      "Columbia",
+      "Cuba",
+      "Dominican-Republic",
+      "Ecuador",
+      "El-Salvador",
+      "England",
+      "France",
+      "Germany",
+      "Greece",
+      "Guatemala",
+      "Haiti",
+      "Holand-Netherlands",
+      "Honduras",
+      "Hong",
+      "Hungary",
+      "India",
+      "Iran",
+      "Ireland",
+      "Italy",
+      "Jamaica",
+      "Japan",
+      "Laos",
+      "Mexico",
+      "Nicaragua",
+      "Outlying-US(Guam-USVI-etc)",
+      "Peru",
+      "Philippines",
+      "Poland",
+      "Portugal",
+      "Puerto-Rico",
+      "Scotland",
+      "South",
+      "Taiwan",
+      "Thailand",
+      "Trinadad&Tobago",
+      "United-States",
+      "Vietnam",
+      "Yugoslavia"
+    ],
+    "income": [
+      "<=50K",
+      ">50K"
+    ]
+  },
+  "column_types": {
+    "age": "integer",
+    "workclass": "categorical",
+    "fnlwgt": "integer",
+    "education": "categorical",
+    "education-num": "ordinal",
+    "marital-status": "categorical",
+    "occupation": "categorical",
+    "relationship": "categorical",
+    "race": "categorical",
+    "sex": "categorical",
+    "capital-gain": "integer",
+    "capital-loss": "integer",
+    "hours-per-week": "integer",
+    "native-country": "categorical",
+    "income": "categorical"
+  },
+  "datetime_spec": {},
+  "provenance": {
+    "generated_at_utc": "2026-02-24T18:57:00.453959+00:00",
+    "source_csv": "/Users/narasimha/code/privbayes-benchmark/data/adult.csv",
+    "source_delimiter": ",",
+    "pad_frac": 0.05,
+    "inferred_categories": true,
+    "max_categories": 200,
+    "inferred_datetimes": true,
+    "datetime_min_parse_frac": 0.95,
+    "inferred_binary_domain": true,
+    "guid_min_match_frac": 0.95,
+    "guid_like_columns": [],
+    "datetime_output_format": "preserve",
+    "column_types_overrides": "examples/column_types.sample.json"
+  },
+  "target_spec": {
+    "targets": [
+      "income"
+    ],
+    "kind": "single",
+    "dtypes": {
+      "income": "categorical"
+    },
+    "primary_target": "income"
+  },
+  "constraints": {
+    "column_constraints": {
+      "age": {
+        "type": "integer",
+        "min": 13.35,
+        "max": 93.65
+      },
+      "workclass": {
+        "type": "categorical",
+        "allowed_values": [
+          "Federal-gov",
+          "Local-gov",
+          "Private",
+          "Self-emp-inc",
+          "Self-emp-not-inc",
+          "State-gov",
+          "Without-pay"
+        ]
+      },
+      "fnlwgt": {
+        "type": "integer",
+        "min": -59777.8,
+        "max": 1558251.8
+      },
+      "education": {
+        "type": "categorical",
+        "allowed_values": [
+          "10th",
+          "11th",
+          "12th",
+          "1st-4th",
+          "5th-6th",
+          "7th-8th",
+          "9th",
+          "Assoc-acdm",
+          "Assoc-voc",
+          "Bachelors",
+          "Doctorate",
+          "HS-grad",
+          "Masters",
+          "Preschool",
+          "Prof-school",
+          "Some-college"
+        ]
+      },
+      "education-num": {
+        "type": "ordinal",
+        "allowed_values": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      "marital-status": {
+        "type": "categorical",
+        "allowed_values": [
+          "Divorced",
+          "Married-AF-spouse",
+          "Married-civ-spouse",
+          "Married-spouse-absent",
+          "Never-married",
+          "Separated",
+          "Widowed"
+        ]
+      },
+      "occupation": {
+        "type": "categorical",
+        "allowed_values": [
+          "Adm-clerical",
+          "Armed-Forces",
+          "Craft-repair",
+          "Exec-managerial",
+          "Farming-fishing",
+          "Handlers-cleaners",
+          "Machine-op-inspct",
+          "Other-service",
+          "Priv-house-serv",
+          "Prof-specialty",
+          "Protective-serv",
+          "Sales",
+          "Tech-support",
+          "Transport-moving"
+        ]
+      },
+      "relationship": {
+        "type": "categorical",
+        "allowed_values": [
+          "Husband",
+          "Not-in-family",
+          "Other-relative",
+          "Own-child",
+          "Unmarried",
+          "Wife"
+        ]
+      },
+      "race": {
+        "type": "categorical",
+        "allowed_values": [
+          "Amer-Indian-Eskimo",
+          "Asian-Pac-Islander",
+          "Black",
+          "Other",
+          "White"
+        ]
+      },
+      "sex": {
+        "type": "categorical",
+        "allowed_values": [
+          "Female",
+          "Male"
+        ]
+      },
+      "capital-gain": {
+        "type": "integer",
+        "min": -4999.950000000001,
+        "max": 104998.95
+      },
+      "capital-loss": {
+        "type": "integer",
+        "min": -217.8,
+        "max": 4573.8
+      },
+      "hours-per-week": {
+        "type": "integer",
+        "min": -3.9000000000000004,
+        "max": 103.9
+      },
+      "native-country": {
+        "type": "categorical",
+        "allowed_values": [
+          "Cambodia",
+          "Canada",
+          "China",
+          "Columbia",
+          "Cuba",
+          "Dominican-Republic",
+          "Ecuador",
+          "El-Salvador",
+          "England",
+          "France",
+          "Germany",
+          "Greece",
+          "Guatemala",
+          "Haiti",
+          "Holand-Netherlands",
+          "Honduras",
+          "Hong",
+          "Hungary",
+          "India",
+          "Iran",
+          "Ireland",
+          "Italy",
+          "Jamaica",
+          "Japan",
+          "Laos",
+          "Mexico",
+          "Nicaragua",
+          "Outlying-US(Guam-USVI-etc)",
+          "Peru",
+          "Philippines",
+          "Poland",
+          "Portugal",
+          "Puerto-Rico",
+          "Scotland",
+          "South",
+          "Taiwan",
+          "Thailand",
+          "Trinadad&Tobago",
+          "United-States",
+          "Vietnam",
+          "Yugoslavia"
+        ]
+      },
+      "income": {
+        "type": "categorical",
+        "allowed_values": [
+          "<=50K",
+          ">50K"
+        ]
+      }
+    },
+    "cross_column_constraints": [],
+    "row_group_constraints": []
+  }
+}

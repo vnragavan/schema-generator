@@ -1,0 +1,208 @@
+{
+  "schema_version": "1.3.0",
+  "dataset": "ncctg_lung",
+  "target_col": "event",
+  "label_domain": [
+    "0",
+    "1"
+  ],
+  "public_bounds": {
+    "inst": [
+      -0.6000000000000001,
+      34.6
+    ],
+    "time": [
+      -45.85,
+      1072.85
+    ],
+    "age": [
+      36.85,
+      84.15
+    ],
+    "ph.ecog": [
+      -0.15000000000000002,
+      3.15
+    ],
+    "ph.karno": [
+      47.5,
+      102.5
+    ],
+    "pat.karno": [
+      26.5,
+      103.5
+    ],
+    "meal.cal": [
+      -29.200000000000003,
+      2725.2
+    ],
+    "wt.loss": [
+      -28.6,
+      72.6
+    ],
+    "time_to_event": [
+      -45.85,
+      1072.85
+    ]
+  },
+  "public_categories": {
+    "status": [
+      "0",
+      "1"
+    ],
+    "sex": [
+      "1",
+      "2"
+    ],
+    "event": [
+      "0",
+      "1"
+    ]
+  },
+  "column_types": {
+    "inst": "integer",
+    "time": "integer",
+    "status": "ordinal",
+    "age": "integer",
+    "sex": "ordinal",
+    "ph.ecog": "integer",
+    "ph.karno": "integer",
+    "pat.karno": "integer",
+    "meal.cal": "integer",
+    "wt.loss": "integer",
+    "time_to_event": "integer",
+    "event": "categorical"
+  },
+  "datetime_spec": {},
+  "provenance": {
+    "generated_at_utc": "2026-02-24T18:57:15.393565+00:00",
+    "source_csv": "/Users/narasimha/code/privbayes-benchmark/data/ncctg_lung.csv",
+    "source_delimiter": ",",
+    "pad_frac": 0.05,
+    "inferred_categories": true,
+    "max_categories": 200,
+    "inferred_datetimes": true,
+    "datetime_min_parse_frac": 0.95,
+    "inferred_binary_domain": true,
+    "guid_min_match_frac": 0.95,
+    "guid_like_columns": [],
+    "datetime_output_format": "preserve",
+    "column_types_overrides": null
+  },
+  "target_spec": {
+    "targets": [
+      "event",
+      "time_to_event"
+    ],
+    "kind": "survival_pair",
+    "primary_target": "event",
+    "dtypes": {
+      "event": "numeric",
+      "time_to_event": "numeric"
+    }
+  },
+  "constraints": {
+    "column_constraints": {
+      "inst": {
+        "type": "integer",
+        "min": -0.6000000000000001,
+        "max": 34.6
+      },
+      "time": {
+        "type": "integer",
+        "min": -45.85,
+        "max": 1072.85
+      },
+      "status": {
+        "type": "ordinal",
+        "allowed_values": [
+          "0",
+          "1"
+        ]
+      },
+      "age": {
+        "type": "integer",
+        "min": 36.85,
+        "max": 84.15
+      },
+      "sex": {
+        "type": "ordinal",
+        "allowed_values": [
+          "1",
+          "2"
+        ]
+      },
+      "ph.ecog": {
+        "type": "integer",
+        "min": -0.15000000000000002,
+        "max": 3.15
+      },
+      "ph.karno": {
+        "type": "integer",
+        "min": 47.5,
+        "max": 102.5
+      },
+      "pat.karno": {
+        "type": "integer",
+        "min": 26.5,
+        "max": 103.5
+      },
+      "meal.cal": {
+        "type": "integer",
+        "min": -29.200000000000003,
+        "max": 2725.2
+      },
+      "wt.loss": {
+        "type": "integer",
+        "min": -28.6,
+        "max": 72.6
+      },
+      "time_to_event": {
+        "min_exclusive": 0
+      },
+      "event": {
+        "type": "categorical",
+        "allowed_values": [
+          "0",
+          "1"
+        ]
+      },
+      "patient_id": {
+        "semantic_role": "identifier"
+      }
+    },
+    "cross_column_constraints": [
+      {
+        "name": "survival_pair_definition",
+        "type": "survival_pair",
+        "event_col": "event",
+        "time_col": "time_to_event",
+        "event_allowed_values": [
+          0,
+          1
+        ],
+        "time_min_exclusive": 0
+      },
+      {
+        "name": "event_time_relation",
+        "type": "survival_pair",
+        "event_col": "event",
+        "time_col": "time_to_event",
+        "event_allowed_values": [
+          0,
+          1
+        ],
+        "time_min_exclusive": 0
+      }
+    ],
+    "row_group_constraints": [
+      {
+        "name": "one_record_per_patient",
+        "group_by": [
+          "patient_id"
+        ],
+        "rule": "max_rows_per_group",
+        "value": 1
+      }
+    ]
+  }
+}
