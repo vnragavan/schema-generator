@@ -12,7 +12,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-SCHEMA_VERSION = "1.3.0"
+SCHEMA_VERSION = "1.0.0"
 
 _UUID_RE = re.compile(
     r"^(?:"
@@ -211,7 +211,7 @@ def _build_constraints(
     *,
     column_types: dict[str, str],
     public_categories: dict[str, list[str]],
-    public_bounds: dict[str, list[float]],
+    public_bounds: dict[str, list[float | int]],
     guid_like_columns: list[str],
     target_spec: dict[str, Any] | None,
 ) -> dict[str, Any]:
@@ -327,8 +327,7 @@ def main() -> None:
     df = pd.read_csv(args.data, sep=delimiter, engine="python")
     cols = [str(c) for c in df.columns]
     target_col = args.target_col or _infer_target_col(cols)
-
-    public_bounds: dict[str, list[float]] = {}
+    public_bounds: dict[str, list[float | int]] = {}
     public_categories: dict[str, list[str]] = {}
     missing_value_rates: dict[str, float] = {}
     column_types: dict[str, str] = {}
@@ -502,6 +501,13 @@ def main() -> None:
             _targets_to_scrub.append(target_col)
         for t in _targets_to_scrub:
             public_categories.pop(t, None)
+
+    if target_spec is not None and str(target_spec.get("kind")) == "survival_pair":
+        tcols = target_spec.get("targets")
+        if isinstance(tcols, list) and len(tcols) >= 2:
+            event_col = str(tcols[0])
+            if event_col in public_bounds:
+                public_bounds[event_col] = [0, 1]
 
     schema: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,

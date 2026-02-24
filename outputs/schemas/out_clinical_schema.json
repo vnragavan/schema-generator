@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.3.0",
+  "schema_version": "1.0.0",
   "dataset": "dummy_clinical_data",
   "target_col": "is_deceased",
   "label_domain": [
@@ -107,8 +107,8 @@
     }
   },
   "provenance": {
-    "generated_at_utc": "2026-02-24T22:15:37.222614+00:00",
-    "source_csv": "examples/dummy_clinical_data.csv",
+    "generated_at_utc": "2026-02-24T22:52:32.696133+00:00",
+    "source_csv": "data/dummy_clinical_data.csv",
     "source_delimiter": ",",
     "pad_frac": 0.0,
     "pad_frac_integer": 0.0,

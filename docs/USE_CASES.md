@@ -42,7 +42,7 @@ python schema_toolkit/prepare_schema.py \
   --out out/adult_schema.json \
   --dataset-name adult \
   --target-col income \
-  --column-types examples/column_types.sample.json \
+  --column-types inputs/schemas/column_types.sample.json \
   --infer-categories \
   --infer-binary-domain \
   --infer-datetimes
@@ -121,8 +121,8 @@ python schema_toolkit/prepare_schema.py \
   --out out/ncctg_lung_schema.json \
   --dataset-name ncctg_lung \
   --target-col event \
-  --target-spec-file examples/target_spec.sample.json \
-  --constraints-file examples/constraints.sample.json \
+  --target-spec-file inputs/schemas/target_spec.sample.json \
+  --constraints-file inputs/schemas/constraints.sample.json \
   --infer-categories \
   --infer-binary-domain \
   --infer-datetimes

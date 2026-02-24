@@ -20,7 +20,7 @@ Self-contained toolkit to generate typed schema contracts from tabular data.
 - `schema_toolkit/render_datetime.py`
   - Converts epoch-ns datetime columns back to string format using `datetime_spec`.
 
-- `examples/*.sample.json`
+- `inputs/schemas/*.sample.json`
   - Templates for additional files users can provide.
 
 ## Installation
@@ -135,9 +135,9 @@ python schema_toolkit/prepare_schema.py \
   --out out/my_schema.json \
   --dataset-name my_dataset \
   --target-col event \
-  --column-types examples/column_types.sample.json \
-  --target-spec-file examples/target_spec.sample.json \
-  --constraints-file examples/constraints.sample.json \
+  --column-types inputs/schemas/column_types.sample.json \
+  --target-spec-file inputs/schemas/target_spec.sample.json \
+  --constraints-file inputs/schemas/constraints.sample.json \
   --infer-categories \
   --infer-binary-domain \
   --infer-datetimes \
