@@ -1,0 +1,28 @@
+{
+  "column_constraints": {
+    "time_to_event": {
+      "min_exclusive": 0
+    },
+    "patient_id": {
+      "semantic_role": "identifier"
+    }
+  },
+  "cross_column_constraints": [
+    {
+      "name": "event_time_relation",
+      "type": "survival_pair",
+      "event_col": "event",
+      "time_col": "time_to_event",
+      "event_allowed_values": [0, 1],
+      "time_min_exclusive": 0
+    }
+  ],
+  "row_group_constraints": [
+    {
+      "name": "one_record_per_patient",
+      "group_by": ["patient_id"],
+      "rule": "max_rows_per_group",
+      "value": 1
+    }
+  ]
+}

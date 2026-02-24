@@ -1,0 +1,9 @@
+{
+  "targets": ["event", "time_to_event"],
+  "kind": "survival_pair",
+  "primary_target": "event",
+  "dtypes": {
+    "event": "numeric",
+    "time_to_event": "numeric"
+  }
+}
