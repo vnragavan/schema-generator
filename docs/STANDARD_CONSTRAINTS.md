@@ -2,7 +2,7 @@
 
 To guarantee that synthetic data algorithms generate biologically and temporally possible patients, `schema-generator` supports a standard vocabulary of constraint classes. Because the generator functions as a "metadata contract engine," these constraints are passed via the `--constraints-file` argument and embedded into the final `schema.json`.
 
-Downstream synthetic data generators (such as SDV, Gretel, or custom Diffusion/GAN frameworks) and validators (like Great Expectations) can parse this standard vocabulary to construct rejection samplers, loss function penalties, or programmatic filters.
+Downstream synthetic data generators  and validator can parse this standard vocabulary to construct rejection samplers, loss function penalties, or programmatic filters.
 
 The standard defines **six fundamental vocabularies** capable of capturing the physical laws of a flat tabular medical dataset.
 
