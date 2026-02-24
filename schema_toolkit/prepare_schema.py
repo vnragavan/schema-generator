@@ -50,19 +50,28 @@ def _infer_csv_delimiter(path: Path) -> str:
 
 
 def _infer_target_dtype(df: pd.DataFrame, col: str) -> str:
+    """Return schema dtype: integer, continuous, categorical, or ordinal."""
     if col not in df.columns:
         return "unknown"
-    return "numeric" if pd.api.types.is_numeric_dtype(df[col]) else "categorical"
+    s = df[col]
+    if not (pd.api.types.is_numeric_dtype(s) or pd.api.types.is_bool_dtype(s)):
+        return "categorical"
+    x = pd.to_numeric(s, errors="coerce")
+    xn = x[np.isfinite(x)].to_numpy(dtype=float)
+    if xn.size == 0:
+        return "continuous"
+    if np.all(np.isclose(xn, np.round(xn), atol=1e-8)):
+        return "integer"
+    return "continuous"
 
 
 def _target_dtype_from_column_type(column_type: str | None) -> str | None:
+    """Return schema dtype as-is: integer, continuous, categorical, or ordinal."""
     if not isinstance(column_type, str):
         return None
     t = column_type.strip().lower()
-    if t in {"integer", "continuous"}:
-        return "numeric"
-    if t in {"categorical", "ordinal"}:
-        return "categorical"
+    if t in {"integer", "continuous", "categorical", "ordinal"}:
+        return t
     return None
 
 
@@ -157,7 +166,7 @@ def _is_guid_like_series(s: pd.Series, *, min_match_frac: float = 0.95) -> bool:
     return float(x.str.strip().str.fullmatch(_UUID_RE, na=False).mean()) >= float(min_match_frac)
 
 
-def _is_numeric_series(s: pd.Series) -> bool:
+def _is_number_like_series(s: pd.Series) -> bool:
     if pd.api.types.is_numeric_dtype(s) or pd.api.types.is_bool_dtype(s):
         return True
     if pd.api.types.is_datetime64_any_dtype(s) or pd.api.types.is_timedelta64_dtype(s):
@@ -167,7 +176,7 @@ def _is_numeric_series(s: pd.Series) -> bool:
     return False
 
 
-def _numeric_bounds(s: pd.Series, pad_frac: float, *, integer_like: bool = False) -> list[float]:
+def _bounds_for_number_like(s: pd.Series, pad_frac: float, *, integer_like: bool = False) -> list[float]:
     x = pd.to_numeric(s, errors="coerce").to_numpy(dtype=float)
     x = x[np.isfinite(x)]
     if x.size == 0:
@@ -369,9 +378,9 @@ def main() -> None:
                 if not isinstance(dom, list):
                     raise SystemExit(f"--column-types[{c}].domain must be list")
                 public_categories[c] = [str(x) for x in dom]
-            elif t in {"continuous", "integer"} and _is_numeric_series(s):
+            elif t in {"continuous", "integer"} and _is_number_like_series(s):
                 this_pad = pad_frac_integer if t == "integer" else pad_frac_continuous
-                public_bounds[c] = _numeric_bounds(
+                public_bounds[c] = _bounds_for_number_like(
                     s,
                     this_pad,
                     integer_like=(t == "integer"),
@@ -383,7 +392,7 @@ def main() -> None:
             public_categories[c] = ["0", "1"] if bool(args.infer_binary_domain) else public_categories.get(c, [])
             if c not in public_categories:
                 public_bounds[c] = [0.0, 1.0]
-        elif _is_numeric_series(s):
+        elif _is_number_like_series(s):
             if dt_converted:
                 column_types[c] = "integer"
                 out_fmt = dt_fmt_hint if str(args.datetime_output_format).strip().lower() == "preserve" else str(args.datetime_output_format)
@@ -407,7 +416,7 @@ def main() -> None:
             else:
                 inferred_t = column_types[c]
                 this_pad = pad_frac_integer if inferred_t == "integer" else pad_frac_continuous
-                public_bounds[c] = _numeric_bounds(
+                public_bounds[c] = _bounds_for_number_like(
                     s,
                     this_pad,
                     integer_like=(inferred_t == "integer"),
@@ -485,12 +494,17 @@ def main() -> None:
         if isinstance(tcols, list) and tcols:
             existing_dtypes = target_spec.get("dtypes") if isinstance(target_spec.get("dtypes"), dict) else {}
             normalized_dtypes: dict[str, str] = {}
+            allowed = {"integer", "continuous", "categorical", "ordinal"}
             for t in [str(x) for x in tcols]:
                 mapped = _target_dtype_from_column_type(column_types.get(t))
                 if mapped is not None:
                     normalized_dtypes[t] = mapped
                 elif isinstance(existing_dtypes.get(t), str):
-                    normalized_dtypes[t] = str(existing_dtypes[t])
+                    raw = str(existing_dtypes[t]).strip().lower()
+                    if raw not in allowed:
+                        normalized_dtypes[t] = _infer_target_dtype(df, t)
+                    else:
+                        normalized_dtypes[t] = raw
                 else:
                     normalized_dtypes[t] = _infer_target_dtype(df, t)
             target_spec["dtypes"] = normalized_dtypes

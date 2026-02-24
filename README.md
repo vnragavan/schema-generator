@@ -9,7 +9,7 @@ Self-contained toolkit to generate typed schema contracts from tabular data.
   - Supports:
     - delimiter inference
     - typed columns (`continuous`, `integer`, `categorical`, `ordinal`)
-    - binary inference for numeric 2-valued fields (e.g., `0/1`, `1/2`)
+    - binary inference for integer 2-valued fields (e.g., `0/1`, `1/2`)
     - GUID/UUID identifier detection
     - datetime inference (mixed formats) with `datetime_spec`
     - optional multi-target / survival target definitions
@@ -50,7 +50,7 @@ You can refine schema behavior by providing additional files.
 
 ### 1) Column type overrides (`--column-types`)
 
-Use this when you know certain fields are ordinal/categorical/numeric regardless of automatic inference.
+Use this when you know certain fields are ordinal/categorical or integer/continuous regardless of automatic inference.
 
 Example:
 
@@ -76,8 +76,8 @@ Example:
   "kind": "survival_pair",
   "primary_target": "event",
   "dtypes": {
-    "event": "numeric",
-    "time_to_event": "numeric"
+    "event": "categorical",
+    "time_to_event": "integer"
   }
 }
 ```
@@ -139,9 +139,9 @@ python schema_toolkit/prepare_schema.py \
 
 ## Datetime behavior
 
-- Internally stored as numeric epoch-ns (`integer`) for model compatibility.
+- Internally stored as integer epoch-ns for model compatibility.
 - Original rendering intent recorded in `datetime_spec`.
-- Use `render_datetime.py` to convert synthesized numeric datetime columns back to formatted strings.
+- Use `render_datetime.py` to convert synthesized epoch-ns datetime columns back to formatted strings.
 
 Example:
 

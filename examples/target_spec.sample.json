@@ -4,6 +4,6 @@
   "primary_target": "event",
   "dtypes": {
     "event": "categorical",
-    "time_to_event": "numeric"
+    "time_to_event": "integer"
   }
 }

@@ -74,7 +74,7 @@
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T19:35:28.363896+00:00",
+    "generated_at_utc": "2026-02-24T19:40:17.530797+00:00",
     "source_csv": "example_data_path_to_csv_file",
     "source_delimiter": ",",
     "pad_frac": 0.0,
@@ -99,7 +99,7 @@
     "primary_target": "event",
     "dtypes": {
       "event": "categorical",
-      "time_to_event": "numeric"
+      "time_to_event": "integer"
     }
   },
   "constraints": {

@@ -36,11 +36,11 @@ Each column entry supports:
 ## Semantics by type
 
 - `continuous`
-  - Numeric real-valued field.
-  - Generator uses numeric bounds (`public_bounds`).
+  - Real-valued field.
+  - Generator uses bounds (`public_bounds`).
 - `integer`
-  - Numeric integer-valued field.
-  - Generator uses numeric bounds (`public_bounds`).
+  - Integer-valued field.
+  - Generator uses bounds (`public_bounds`).
 - `categorical`
   - Unordered labels.
   - If `domain` provided, it is copied to `public_categories`.

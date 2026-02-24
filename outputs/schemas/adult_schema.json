@@ -174,7 +174,7 @@
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T19:26:45.107208+00:00",
+    "generated_at_utc": "2026-02-24T19:40:15.966708+00:00",
     "source_csv": "example_data_path_to_csv_file",
     "source_delimiter": ",",
     "pad_frac": 0.0,

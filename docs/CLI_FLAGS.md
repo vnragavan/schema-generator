@@ -75,7 +75,7 @@ This document is the complete CLI reference for:
 
 - `--pad-frac <float>`
   - **Default:** `0.0`
-  - Global fallback padding fraction for numeric bounds in `public_bounds`.
+  - Global fallback padding fraction for integer/continuous bounds in `public_bounds`.
 
 - `--pad-frac-integer <float>`
   - **Default:** unset (falls back to `--pad-frac`)
@@ -88,7 +88,7 @@ This document is the complete CLI reference for:
 
 - `--infer-categories`
   - **Default:** off
-  - Infer category domains for non-numeric columns.
+  - Infer category domains for non–integer/continuous columns.
 
 - `--max-categories <int>`
   - **Default:** `200`
@@ -97,7 +97,7 @@ This document is the complete CLI reference for:
 
 - `--infer-binary-domain`
   - **Default:** off
-  - For numeric 2-valued integer-like fields (e.g., `0/1`, `1/2`), infer ordinal domain in `public_categories`.
+  - For integer 2-valued fields (e.g., `0/1`, `1/2`), infer ordinal domain in `public_categories`.
 
 - `--infer-datetimes`
   - **Default:** off
@@ -146,7 +146,7 @@ This document is the complete CLI reference for:
 
 - `--keep-original`
   - **Default:** off
-  - If set, original numeric datetime columns are retained and rendered values are written to `<column>__rendered`.
+  - If set, original epoch-ns datetime columns are retained and rendered values are written to `<column>__rendered`.
   - If not set, source datetime columns are replaced with rendered strings.
 
 ---
@@ -163,7 +163,7 @@ This document is the complete CLI reference for:
   - `--pad-frac-integer` for `integer` columns when provided
   - `--pad-frac-continuous` for `continuous` columns when provided
   - otherwise global `--pad-frac`
-- `categorical`/`ordinal` columns do not use numeric padding.
+- `categorical`/`ordinal` columns do not use bounds padding.
 - Datetime parsing only runs when `--infer-datetimes` is enabled.
 
 ---

@@ -18,7 +18,7 @@ Top-level JSON object:
   "kind": "multi_target",
   "primary_target": "target_a",
   "dtypes": {
-    "target_a": "numeric",
+    "target_a": "integer",
     "target_b": "categorical"
   }
 }
@@ -37,9 +37,8 @@ Top-level JSON object:
   - Default target for consumers that need one canonical output.
   - Not mandatory when multiple targets exist.
 - `dtypes` (optional)
-  - Mapping of each target to logical dtype (`numeric` / `categorical` / other labels used by your workflow).
-  - Values are normalized by the generator to be consistent with resolved schema `column_types` when possible
-    (e.g., `integer`/`continuous` -> `numeric`, `categorical`/`ordinal` -> `categorical`).
+  - Mapping of each target to schema dtype: `integer`, `continuous`, `categorical`, or `ordinal`.
+  - Values are normalized to match resolved `column_types` when possible; any other value in the file is inferred from data as `integer` or `continuous`.
 
 ## Survival-pair convention
 
@@ -52,7 +51,7 @@ For survival use case:
   "primary_target": "event",
   "dtypes": {
     "event": "categorical",
-    "time_to_event": "numeric"
+    "time_to_event": "integer"
   }
 }
 ```

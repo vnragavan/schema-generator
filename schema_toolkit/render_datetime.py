@@ -16,7 +16,7 @@ def main() -> None:
     ap.add_argument(
         "--keep-original",
         action="store_true",
-        help="Keep numeric source column and write rendered values to <col>__rendered",
+        help="Keep epoch-ns source column and write rendered values to <col>__rendered",
     )
     args = ap.parse_args()
 

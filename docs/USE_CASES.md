@@ -60,7 +60,7 @@ python schema_toolkit/prepare_schema.py \
 - `label_domain` (typically `<=50K`, `>50K`)
 - `column_types` with categorical/integer/continuous/ordinal assignments
 - `public_categories` for categorical columns (including binary categories like `sex`, `income`)
-- `public_bounds` for numeric columns
+- `public_bounds` for integer/continuous columns
 - `constraints` block (`column_constraints`, etc.)
 - `provenance` with delimiter and inference settings
 
@@ -96,7 +96,7 @@ python schema_toolkit/prepare_schema.py \
 - `dataset: "breast_cancer"`
 - `target_col: "target"`
 - `label_domain` usually `["0","1"]`
-- mostly numeric `column_types` + categorical target
+- mostly integer/continuous `column_types` + categorical target
 - `public_bounds` for most feature columns
 - `constraints` and `provenance`
 
@@ -187,7 +187,7 @@ From `prepare_schema.py`:
 - One schema JSON at `--out` with:
   - types (`column_types`)
   - domains (`public_categories`)
-  - numeric ranges (`public_bounds`)
+  - integer/continuous ranges (`public_bounds`)
   - optional `datetime_spec`
   - optional `target_spec`
   - `constraints`
