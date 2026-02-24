@@ -312,6 +312,11 @@ def main() -> None:
     ap.add_argument("--datetime-output-format", type=str, default="preserve")
     ap.add_argument("--guid-min-match-frac", type=float, default=0.95)
     ap.add_argument(
+        "--target-is-classifier",
+        action="store_true",
+        help="Force the output of a label_domain for integer target columns",
+    )
+    ap.add_argument(
         "--no-publish-label-domain",
         action="store_true",
         help="Do not enumerate target column values into label_domain or public_categories",
@@ -486,7 +491,9 @@ def main() -> None:
 
     label_domain: list[str] = []
     if target_col and target_col in df.columns and not args.no_publish_label_domain:
-        if column_types.get(target_col) in {"categorical", "ordinal"}:
+        is_survival = target_spec is not None and str(target_spec.get("kind")) == "survival_pair"
+        is_categorical = column_types.get(target_col) in {"categorical", "ordinal"}
+        if (is_categorical or args.target_is_classifier) and not is_survival:
             u = pd.Series(df[target_col], copy=False).astype("string").dropna().unique().tolist()
             u_sorted = sorted([str(x) for x in u])
             if 0 < len(u_sorted) <= int(args.max_categories):

@@ -191,3 +191,44 @@ def test_six_class_medical_constraints(tmp_path):
     assert schema["constraints"]["column_constraints"]["icd_10_code"]["constraint_class"] == "RegexMatch"
     assert len(schema["constraints"]["cross_column_constraints"]) == 4
     assert schema["constraints"]["row_group_constraints"][0]["constraint_class"] == "MonotonicOrdering"
+
+def test_label_domain_combinatorics(tmp_path):
+    """Test downstream label_domain utility mechanics natively mapping multiple target types."""
+    import json
+    csv_file = tmp_path / "data.csv"
+    out_file = tmp_path / "out.json"
+    spec_file = tmp_path / "spec.json"
+    
+    # 1. Base Multi-Class Integer Dataset
+    df = pd.DataFrame({
+        "age": [45, 62, 33, 71, 55],
+        "outcome": [0, 1, 2, 3, 0],
+        "time": [100, 50, 200, 10, 80]
+    })
+    df.to_csv(csv_file, index=False)
+    
+    # Scenario A: Standard Integer Target -> Continuous Utility Metrics
+    with patch("sys.argv", ["prepare_schema.py", "--data", str(csv_file), "--out", str(out_file), "--target-col", "outcome"]):
+        main()
+    schema_a = json.loads(out_file.read_text())
+    assert schema_a["column_types"]["outcome"] == "integer"
+    assert schema_a["label_domain"] == []
+    
+    # Scenario B: Forced Classification Escape Hatch -> Machine Learning Efficacy
+    with patch("sys.argv", ["prepare_schema.py", "--data", str(csv_file), "--out", str(out_file), "--target-col", "outcome", "--target-is-classifier"]):
+        main()
+    schema_b = json.loads(out_file.read_text())
+    assert schema_b["column_types"]["outcome"] == "integer"
+    assert schema_b["label_domain"] == ["0", "1", "2", "3"]
+    assert schema_b["public_categories"]["outcome"] == ["0", "1", "2", "3"]
+    
+    # Scenario C: Survival Pair Target -> Bypass Classification
+    spec = {"targets": ["outcome", "time"], "kind": "survival_pair"}
+    spec_file.write_text(json.dumps(spec))
+    with patch("sys.argv", ["prepare_schema.py", "--data", str(csv_file), "--out", str(out_file), "--target-spec-file", str(spec_file)]):
+        main()
+    schema_c = json.loads(out_file.read_text())
+    assert schema_c["target_spec"]["kind"] == "survival_pair"
+    assert schema_c["column_types"]["outcome"] == "ordinal"
+    assert schema_c["label_domain"] == [] # Downstream evaluates via C-Index
+    assert schema_c["public_categories"]["outcome"] == ["0", "1"] # Bounds preserved uniquely

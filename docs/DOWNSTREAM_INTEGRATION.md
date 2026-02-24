@@ -59,6 +59,12 @@ Often used for supervised machine learning tasks where researchers are creating 
 *   **Usage (`survival_pair`):** Structurally forces the downstream networks to identify a time-to-event architecture, ensuring utility metrics calculate Concordance Index (C-Index) or Brier Score jointly modeling `event` probability across `time`.
 *   **Usage (`multi_target`):** When generating a dataset with multiple clinical outcomes (e.g., predicting `ICU_Admission` and `Mortality` simultaneously), downstream evaluators must compute Machine Learning Efficacy metrics for *every* target listed explicitly in `target_spec["targets"]` independently. The holistic dataset utility score should be reported as the average (or worst-case) aggregate across all targeted predictions to ensure the AI hasn't sacrificed the statistical fidelity of one label to overfit the other.
 
+### `label_domain` (The Classification Escape Hatch)
+For a logistic regression or random forest evaluator, `label_domain` is used to define the absolute class set. This dictates whether to use binary/multi-class loss, aligns prediction probabilities across synthetic/real data splits consistently, and ensures symmetric label encoding between train and test boundaries.
+*   **Categorical/Ordinal Targets:** Automatically populated with all valid string labels.
+*   **Integer Classification Targets:** If a 4-class target is mathematically evaluated as an integer, `label_domain` defaults to `[]`, causing downstream metrics to incorrectly evaluate as a continuous regression task. **Operators must initialize the schema with the `--target-is-classifier` CLI flag** to explicitly force the bounds into `label_domain`, bypassing the regression metrics safely.
+*   **Survival Targets:** `label_domain` is fundamentally empty. The downstream evaluator must rely natively on the `kind: survival_pair` signifier in `target_spec` to bypass classification logic and securely route towards Survival Metrics (like C-Index or Brier Scores).
+
 ---
 
 ## 3. Implementing Constraint Vocabularies

@@ -116,6 +116,10 @@ This document is the complete CLI reference for:
   - **Default:** `False`
   - Writes a placeholder string instead of the real executing local directory path within the JSON payload `provenance.source_csv`. Prominently recommended for sharing federated objects. 
 
+- `--target-is-classifier`
+  - **Default:** `False`
+  - Forces the generator to populate `label_domain` and `public_categories` for the target variable, even if it is mathematically inferred as an integer column. This is a critical escape-hatch for downstream utility evaluation frameworks (like SDMetrics) that require explicit bounding domain lists to configure classification metrics properly.
+
 - `--no-publish-label-domain`
   - **Default:** `False`
   - Manual flag to override and suppress target variables from leaking explicit enumeration domains into `label_domain` and `public_categories`. Useful for reducing sensitive or low-volume prediction label leaks.
