@@ -55,6 +55,17 @@ def _infer_target_dtype(df: pd.DataFrame, col: str) -> str:
     return "numeric" if pd.api.types.is_numeric_dtype(df[col]) else "categorical"
 
 
+def _target_dtype_from_column_type(column_type: str | None) -> str | None:
+    if not isinstance(column_type, str):
+        return None
+    t = column_type.strip().lower()
+    if t in {"integer", "continuous"}:
+        return "numeric"
+    if t in {"categorical", "ordinal"}:
+        return "categorical"
+    return None
+
+
 def _guess_datetime_output_format(raw: pd.Series) -> str:
     samples = pd.Series(raw, copy=False).astype("string").dropna().astype(str).str.strip()
     if samples.empty:
@@ -469,6 +480,20 @@ def main() -> None:
                 "primary_target": target_col,
             }
     if target_spec is not None:
+        # Keep target dtypes consistent with resolved column_types when possible.
+        tcols = target_spec.get("targets")
+        if isinstance(tcols, list) and tcols:
+            existing_dtypes = target_spec.get("dtypes") if isinstance(target_spec.get("dtypes"), dict) else {}
+            normalized_dtypes: dict[str, str] = {}
+            for t in [str(x) for x in tcols]:
+                mapped = _target_dtype_from_column_type(column_types.get(t))
+                if mapped is not None:
+                    normalized_dtypes[t] = mapped
+                elif isinstance(existing_dtypes.get(t), str):
+                    normalized_dtypes[t] = str(existing_dtypes[t])
+                else:
+                    normalized_dtypes[t] = _infer_target_dtype(df, t)
+            target_spec["dtypes"] = normalized_dtypes
         schema["target_spec"] = target_spec
 
     constraints = _build_constraints(

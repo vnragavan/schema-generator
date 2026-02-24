@@ -3,7 +3,7 @@
   "kind": "survival_pair",
   "primary_target": "event",
   "dtypes": {
-    "event": "numeric",
+    "event": "categorical",
     "time_to_event": "numeric"
   }
 }

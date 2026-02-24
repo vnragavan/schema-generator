@@ -38,6 +38,8 @@ Top-level JSON object:
   - Not mandatory when multiple targets exist.
 - `dtypes` (optional)
   - Mapping of each target to logical dtype (`numeric` / `categorical` / other labels used by your workflow).
+  - Values are normalized by the generator to be consistent with resolved schema `column_types` when possible
+    (e.g., `integer`/`continuous` -> `numeric`, `categorical`/`ordinal` -> `categorical`).
 
 ## Survival-pair convention
 
@@ -49,7 +51,7 @@ For survival use case:
   "kind": "survival_pair",
   "primary_target": "event",
   "dtypes": {
-    "event": "numeric",
+    "event": "categorical",
     "time_to_event": "numeric"
   }
 }
