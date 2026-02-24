@@ -15,26 +15,27 @@
       -13.780000000000001,
       119.08
     ],
-    "event_occurred": [
-      0,
-      1
-    ],
     "biomarker_level": [
       7.66,
       16.34
     ]
   },
-  "public_categories": {},
+  "public_categories": {
+    "event_occurred": [
+      "0",
+      "1"
+    ]
+  },
   "column_types": {
     "patient_id": "categorical",
     "time_to_event": "continuous",
-    "event_occurred": "integer",
+    "event_occurred": "ordinal",
     "treatment_arm": "categorical",
     "biomarker_level": "continuous"
   },
   "datetime_spec": {},
   "provenance": {
-    "generated_at_utc": "2026-02-24T22:52:33.012827+00:00",
+    "generated_at_utc": "2026-02-24T22:58:08.999488+00:00",
     "source_csv": "data/dummy_survival_data.csv",
     "source_delimiter": ",",
     "pad_frac": 0.2,
@@ -60,7 +61,7 @@
     ],
     "kind": "survival_pair",
     "dtypes": {
-      "event_occurred": "integer",
+      "event_occurred": "ordinal",
       "time_to_event": "continuous"
     },
     "primary_target": null
@@ -78,9 +79,7 @@
         "min_exclusive": 0
       },
       "event_occurred": {
-        "type": "integer",
-        "min": 0,
-        "max": 1,
+        "type": "ordinal",
         "allowed_values": [
           "0",
           "1"

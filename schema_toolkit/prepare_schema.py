@@ -506,8 +506,13 @@ def main() -> None:
         tcols = target_spec.get("targets")
         if isinstance(tcols, list) and len(tcols) >= 2:
             event_col = str(tcols[0])
-            if event_col in public_bounds:
-                public_bounds[event_col] = [0, 1]
+            column_types[event_col] = "ordinal"
+            public_categories[event_col] = ["0", "1"]
+            public_bounds.pop(event_col, None)
+            
+            dtypes = target_spec.get("dtypes")
+            if isinstance(dtypes, dict):
+                dtypes[event_col] = "ordinal"
 
     schema: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
